@@ -12,24 +12,32 @@ gcloud config set project brand-my-label-api
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
 ```
 
-Deploy (builds the Dockerfile with Cloud Build):
+Build locally and push (avoids Cloud Build), then deploy:
 
 ```bash
-gcloud run deploy brand-my-label \
-  --source . \
-  --region europe-west1 \
-  --allow-unauthenticated \
-  --memory 512Mi --cpu 1 \
-  --concurrency 8 --max-instances 3 --timeout 60 \
+R=europe-west1-docker.pkg.dev/brand-my-label-api/bml/api
+gcloud artifacts repositories create bml --repository-format=docker --location=europe-west1
+gcloud auth configure-docker europe-west1-docker.pkg.dev
+docker build --platform linux/amd64 -t $R:v2 . && docker push $R:v2
+
+gcloud run deploy brand-my-label --image $R:v2 \
+  --region europe-west1 --allow-unauthenticated \
+  --memory 512Mi --cpu 1 --concurrency 8 \
+  --min-instances 0 --max-instances 2 --timeout 60 --cpu-throttling \
   --set-env-vars "^;^ALLOWED_ORIGINS=https://labels.sim1.org,https://sim186.github.io;POSTHOG_PROJECT_TOKEN=phc_xxx;POSTHOG_HOST=https://eu.i.posthog.com"
 ```
 
-- `--max-instances 3` caps the bill if someone hammers the API. Together with
-  the per-IP rate limit and the size limits, worst-case cost stays at a few euros.
-- Set a budget alert in Cloud Billing (for example €5/month).
-- `europe-west1` keeps label data in the EU (GDPR).
 - `^;^` switches gcloud's list separator to `;` so the comma-separated origins survive.
-- The command prints the service URL. Put it in `docs/config.js` as `API_URL`.
+- Later releases: build/push a new tag, then `gcloud run deploy brand-my-label --image $R:<tag> --region europe-west1`.
+
+### Keeping it free
+
+- `--min-instances 0` + `--cpu-throttling`: billed only while a request runs; idle costs nothing.
+- `--max-instances 2`, per-IP rate limit and upload caps bound the worst case.
+- Artifact Registry cleanup policy keeps only the 2 newest images (free tier: 0.5 GB; one image is ~90 MB).
+- Budget of 1 EUR on the project with email alerts at 1%, 50%, 100%.
+  A budget **alerts**, it does not stop spending; the caps above are what limit cost.
+- `europe-west1` keeps label data in the EU (GDPR).
 
 ## Site: GitHub Pages
 

@@ -58,8 +58,10 @@ def init_posthog() -> None:
         if DEBUG:
             raise RuntimeError(msg)
         return
+    # sync_mode: Cloud Run throttles CPU between requests, so a background
+    # sender thread may never flush. Send inline (~50 ms) instead.
     posthog = Posthog(POSTHOG_PROJECT_TOKEN, host=POSTHOG_HOST, debug=DEBUG,
-                      enable_exception_autocapture=True)
+                      sync_mode=True, enable_exception_autocapture=True)
 
 
 def track(event: str, request: Request, props: dict) -> None:
