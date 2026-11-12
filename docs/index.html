@@ -184,6 +184,8 @@
       <div class="row">
         <a class="btn" id="download" download data-i18n="download"></a>
         <button type="button" class="secondary" id="print" data-i18n="print"></button>
+        <span class="grow"></span>
+        <a class="btn secondary donate-link" data-where="result" target="_blank" rel="noopener" data-i18n="coffee_btn" hidden></a>
       </div>
     </div>
   </form>
@@ -200,19 +202,20 @@
 
   <h2 data-i18n="faq_title"></h2>
   <details><summary data-i18n="q1"></summary><p data-i18n="a1"></p></details>
-  <details><summary data-i18n="q2"></summary><p data-i18n="a2"></p></details>
+  <details><summary data-i18n="q2"></summary><p data-i18n-html="a2"></p></details>
   <details><summary data-i18n="q3"></summary><p data-i18n="a3"></p></details>
   <details><summary data-i18n="q4"></summary><p data-i18n="a4"></p></details>
   <details><summary data-i18n="q5"></summary><p data-i18n-html="a5"></p></details>
 
   <div class="coffee card" id="coffee" hidden>
     <p data-i18n="coffee_d"></p>
-    <a class="btn" id="donate" target="_blank" rel="noopener" data-i18n="coffee_btn"></a>
+    <a class="btn donate-link" data-where="card" target="_blank" rel="noopener" data-i18n="coffee_btn"></a>
   </div>
 
   <footer>
     <span data-i18n="footer_stats"></span> ·
-    <a href="https://github.com/sim186/brand-my-label">GitHub</a><br>
+    <a href="https://github.com/sim186/brand-my-label">GitHub</a>
+    <span class="donate-wrap" hidden> · <a class="donate-link" data-where="footer" target="_blank" rel="noopener">Ko-fi</a></span><br>
     <span data-i18n="disclaimer"></span>
   </footer>
 </main>
@@ -261,7 +264,7 @@ const I18N = {
     l3_t: 'Formato piccolo A6', l3_d: 'Tipico di InPost: la pagina viene centrata su A4 con i margini giusti per la stampante.',
     faq_title: 'Domande frequenti',
     q1: 'Salvate le mie etichette?', a1: 'No. L\'etichetta viene elaborata in memoria e cancellata subito: non viene scritta su disco né registrata nei log. Il logo resta solo nel tuo browser.',
-    q2: 'Quanto costa?', a2: 'È gratis. Se ti fa risparmiare tempo puoi offrirmi un caffè, ma non è obbligatorio.',
+    q2: 'Quanto costa?', a2: 'È gratis. Se ti fa risparmiare tempo puoi <a class="donate-link" data-where="faq" target="_blank" rel="noopener">offrirmi un caffè su Ko-fi</a>, ma non è obbligatorio.',
     q3: 'E se non c\'è spazio per il logo?', a3: 'Ti restituiamo l\'etichetta senza modifiche e te lo diciamo. Non copriamo mai codici a barre o indirizzi.',
     q4: 'Che logo funziona meglio?', a4: 'Un PNG con sfondo trasparente, in bianco e nero o comunque scuro: le stampanti delle etichette spesso sono in bianco e nero.',
     q5: 'Posso usarlo con la mia stampante, in automatico?', a5: 'Sì: il codice è open source su <a href="https://github.com/sim186/brand-my-label">GitHub</a>. C\'è anche una versione da riga di comando da collegare alla tua stampante.',
@@ -310,7 +313,7 @@ const I18N = {
     l3_t: 'Small A6 format', l3_d: 'Typical of InPost: the page is centred on A4 with proper printer margins.',
     faq_title: 'FAQ',
     q1: 'Do you store my labels?', a1: 'No. The label is processed in memory and discarded right away: never written to disk or logged. Your logo stays in your browser only.',
-    q2: 'How much does it cost?', a2: 'It\'s free. If it saves you time you can buy me a coffee, but there\'s no obligation.',
+    q2: 'How much does it cost?', a2: 'It\'s free. If it saves you time you can <a class="donate-link" data-where="faq" target="_blank" rel="noopener">buy me a coffee on Ko-fi</a>, but there\'s no obligation.',
     q3: 'What if there\'s no room for the logo?', a3: 'You get the label back unchanged and we tell you. We never cover barcodes or addresses.',
     q4: 'Which logo works best?', a4: 'A PNG with a transparent background, black-and-white or dark: label printers are often monochrome.',
     q5: 'Can I hook it up to my printer?', a5: 'Yes: the code is open source on <a href="https://github.com/sim186/brand-my-label">GitHub</a>, including a command-line version you can wire to your printer.',
@@ -501,6 +504,7 @@ $("app").addEventListener("submit", async (e) => {
     $("preview").src = state.url;
     $("download").href = state.url; $("download").download = name;
     $("result").style.display = "block";
+    if (cfg.DONATE_URL && !state.sample) document.querySelector('#result .donate-link').hidden = false;
     const [key, kind] = MODE[mode] || ["mode_below", "ok"];
     setStatus(key, kind, state.sample ? t(key) + " " + t("sample_note") : null);
     track("stamp_succeeded", { placement_mode: mode, carrier: res.headers.get("x-carrier"), sample: state.sample });
@@ -518,11 +522,23 @@ $("print").addEventListener("click", () => {
   track("branded_label_printed", { sample: state.sample });
   try { $("preview").contentWindow.print(); } catch (_) { window.open(state.url, "_blank"); }
 });
+// donate links: card, result row, FAQ, footer. FAQ links are re-rendered on
+// language change, so wire them on every applyLang via delegation.
 if (cfg.DONATE_URL) {
   $("coffee").hidden = false;
-  const d = $("donate"); d.href = cfg.DONATE_URL;
-  d.addEventListener("click", () => track("donate_clicked"));
+  document.querySelectorAll(".donate-wrap").forEach((el) => { el.hidden = false; });
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("a.donate-link");
+    if (a) track("donate_clicked", { where: a.dataset.where });
+  });
 }
+function wireDonate() {
+  if (!cfg.DONATE_URL) return;
+  document.querySelectorAll("a.donate-link").forEach((a) => { a.href = cfg.DONATE_URL; });
+}
+wireDonate();
+const _applyLang = applyLang;
+applyLang = (l) => { _applyLang(l); wireDonate(); };
 </script>
 </body>
 </html>
