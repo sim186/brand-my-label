@@ -20,7 +20,7 @@ server = [
     "python-multipart>=0.0.9",
     "posthog>=6",
 ]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "pypdfium2>=4"]
 
 [project.scripts]
 brand-my-label = "brand_my_label.cli:main"

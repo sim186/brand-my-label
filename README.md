@@ -5,6 +5,15 @@ Put your shop logo on shipping labels, wherever it fits.
 Drop a label PDF from Vinted, Poste Italiane, InPost, BRT, DPD (or the Vinted
 label viewer page) plus your logo, and get a print-ready PDF back.
 
+**Try it: https://labels.sim1.org** (Italian / English)
+
+| Label on top | Cut-out strip | A6 |
+|---|---|---|
+| ![](docs/examples/top-after.png) | ![](docs/examples/strip-after.png) | ![](docs/examples/a6-after.png) |
+
+<sub>Example labels are synthetic (invented names and addresses); regenerate with
+`python examples/make_examples.py`.</sub>
+
 | Label layout | Example | What happens |
 |---|---|---|
 | Label on top, white space below | Poste, DPD (A4) | logo centred under the label |
