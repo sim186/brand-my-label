@@ -6,5 +6,5 @@ window.BML_CONFIG = {
   POSTHOG_PROJECT_TOKEN: "phc_sX7jPrmj6TMwJCebT9ugnEBQngWeg5fFRyLHCK47mKQT",
   POSTHOG_HOST: "https://eu.i.posthog.com",
   DONATE_URL: "https://ko-fi.com/seamoce",
-  CONTACT_EMAIL_PARTS: null,                 // e.g. ["labels", "sim1.org"]
+  CONTACT_EMAIL_PARTS: ["label", "sim1.org"],  // assembled in JS, not a plain mailto
 };
