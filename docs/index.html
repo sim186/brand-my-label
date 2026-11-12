@@ -44,6 +44,7 @@
   h1 mark { background: var(--accent); color: var(--accent-ink); padding: 0 .15em; border-radius: 6px; }
   .lead { color: var(--muted); margin: 0 0 16px; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+  .missing { font-weight: 600; }
   .chip { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; color: var(--ink); font-weight: 600; background: var(--card); }
   .cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
 
@@ -130,6 +131,7 @@
       <div class="chips"><span data-i18n="works_with"></span>
         <span class="chip">Vinted</span><span class="chip">Poste Italiane</span><span class="chip">BRT</span>
         <span class="chip">InPost</span><span class="chip">DPD</span><span data-i18n="and_more"></span>
+        <a href="#faq-carrier" class="missing" data-i18n="missing_link"></a>
       </div>
       <div class="cta">
         <a class="btn" href="#app" data-i18n="cta_start"></a>
@@ -179,6 +181,7 @@
       <small style="color:var(--muted)"><span data-i18n="no_files"></span> <button type="button" class="link" id="try-sample-2" data-i18n="cta_sample"></button></small>
     </div>
     <div id="status" role="status" aria-live="polite"></div>
+    <small id="hint-none" hidden style="color:var(--muted)"><span data-i18n="hint_none"></span> <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener" data-i18n="hint_link"></a></small>
     <div id="result">
       <iframe id="preview" data-i18n-title="preview"></iframe>
       <div class="row">
@@ -206,6 +209,7 @@
   <details><summary data-i18n="q3"></summary><p data-i18n="a3"></p></details>
   <details><summary data-i18n="q4"></summary><p data-i18n="a4"></p></details>
   <details><summary data-i18n="q5"></summary><p data-i18n-html="a5"></p></details>
+  <details id="faq-carrier"><summary data-i18n="q6"></summary><p><span data-i18n-html="a6"></span><span class="contact-mail" hidden> <span data-i18n="a6_mail"></span> <a class="mail-link"></a>.</span> <span data-i18n="a6_privacy"></span></p></details>
 
   <div class="coffee card" id="coffee" hidden>
     <p data-i18n="coffee_d"></p>
@@ -227,7 +231,7 @@ const I18N = {
   it: {
     h1: 'Il tuo logo su ogni <mark>etichetta di spedizione</mark>',
     lead: "Carichi l'etichetta e il logo del tuo negozio, scarichi il PDF pronto da stampare. Il logo finisce dove c'è spazio: sotto l'etichetta, oppure dentro la striscia da ritagliare, così non lo tagli via.",
-    works_with: 'Funziona con', and_more: 'e altri',
+    works_with: 'Funziona con', and_more: 'e altri.', missing_link: 'Manca il tuo?',
     cta_start: 'Inizia', cta_sample: 'Prova con un esempio',
     before: 'Prima', after: 'Dopo', after_alt: 'Etichetta di esempio con il logo aggiunto sotto',
     how_title: 'Come funziona',
@@ -268,6 +272,12 @@ const I18N = {
     q3: 'E se non c\'è spazio per il logo?', a3: 'Ti restituiamo l\'etichetta senza modifiche e te lo diciamo. Non copriamo mai codici a barre o indirizzi.',
     q4: 'Che logo funziona meglio?', a4: 'Un PNG con sfondo trasparente, in bianco e nero o comunque scuro: le stampanti delle etichette spesso sono in bianco e nero.',
     q5: 'Posso usarlo con la mia stampante, in automatico?', a5: 'Sì: il codice è open source su <a href="https://github.com/sim186/brand-my-label">GitHub</a>. C\'è anche una versione da riga di comando da collegare alla tua stampante.',
+    q6: 'Manca il tuo corriere o il logo finisce nel posto sbagliato?',
+    a6: 'Fammelo sapere: <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener">apri una segnalazione su GitHub</a> (c\'è un modulo apposito).',
+    a6_mail: 'Oppure scrivimi a',
+    a6_privacy: 'Le segnalazioni su GitHub sono pubbliche: copri nomi e indirizzi prima di allegare uno screenshot, oppure manda il PDF via email.',
+    hint_none: 'Pensi che il logo ci stia? Segnalamelo:',
+    hint_link: 'apri una segnalazione',
     coffee_d: 'Brand My Label è gratis e senza pubblicità. Se ti è utile, un caffè aiuta a tenerlo online.',
     coffee_btn: '☕ Offrimi un caffè',
     footer_stats: 'Statistiche d\'uso anonime, nessun cookie.',
@@ -276,7 +286,7 @@ const I18N = {
   en: {
     h1: 'Your logo on every <mark>shipping label</mark>',
     lead: 'Upload the label and your shop logo, download a print-ready PDF. The logo goes where there\'s room: under the label, or inside the cut-out strip so the scissors don\'t take it off.',
-    works_with: 'Works with', and_more: 'and more',
+    works_with: 'Works with', and_more: 'and more.', missing_link: 'Yours is missing?',
     cta_start: 'Get started', cta_sample: 'Try an example',
     before: 'Before', after: 'After', after_alt: 'Sample label with the logo added below',
     how_title: 'How it works',
@@ -317,6 +327,12 @@ const I18N = {
     q3: 'What if there\'s no room for the logo?', a3: 'You get the label back unchanged and we tell you. We never cover barcodes or addresses.',
     q4: 'Which logo works best?', a4: 'A PNG with a transparent background, black-and-white or dark: label printers are often monochrome.',
     q5: 'Can I hook it up to my printer?', a5: 'Yes: the code is open source on <a href="https://github.com/sim186/brand-my-label">GitHub</a>, including a command-line version you can wire to your printer.',
+    q6: 'Your courier is missing or the logo lands in the wrong place?',
+    a6: 'Let me know: <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener">open an issue on GitHub</a> (there\'s a form for it).',
+    a6_mail: 'Or email me at',
+    a6_privacy: 'GitHub issues are public: black out names and addresses before attaching a screenshot, or send the PDF by email.',
+    hint_none: 'Think the logo should fit? Tell me:',
+    hint_link: 'open an issue',
     coffee_d: 'Brand My Label is free and ad-free. If it helps you, a coffee helps keep it online.',
     coffee_btn: '☕ Buy me a coffee',
     footer_stats: 'Anonymous usage stats, no cookies.',
@@ -482,7 +498,7 @@ $("app").addEventListener("submit", async (e) => {
   body.append("label", state.label, state.label.name);
   body.append("logo", state.logo, state.logo.name || "logo.png");
   body.append("to_a4", $("to-a4").checked ? "1" : "0");
-  $("go").disabled = true; $("result").style.display = "none";
+  $("go").disabled = true; $("result").style.display = "none"; $("hint-none").hidden = true;
   setStatus("working");
   track("stamp_requested", { to_a4: $("to-a4").checked, sample: state.sample });
   try {
@@ -504,6 +520,7 @@ $("app").addEventListener("submit", async (e) => {
     $("preview").src = state.url;
     $("download").href = state.url; $("download").download = name;
     $("result").style.display = "block";
+    $("hint-none").hidden = mode !== "none";
     if (cfg.DONATE_URL && !state.sample) document.querySelector('#result .donate-link').hidden = false;
     const [key, kind] = MODE[mode] || ["mode_below", "ok"];
     setStatus(key, kind, state.sample ? t(key) + " " + t("sample_note") : null);
@@ -532,6 +549,22 @@ if (cfg.DONATE_URL) {
     if (a) track("donate_clicked", { where: a.dataset.where });
   });
 }
+// contact email: kept split in config and assembled here, so it isn't a
+// plain mailto in the HTML for scrapers
+(function () {
+  const parts = cfg.CONTACT_EMAIL_PARTS;
+  if (!parts || parts.length !== 2) return;
+  const addr = parts[0] + "@" + parts[1];
+  document.querySelectorAll(".mail-link").forEach((a) => { a.href = "mailto:" + addr + "?subject=Brand%20My%20Label"; a.textContent = addr; });
+  document.querySelectorAll(".contact-mail").forEach((el) => { el.hidden = false; });
+})();
+document.addEventListener("click", (e) => {
+  const a = e.target.closest && e.target.closest("a");
+  if (!a) return;
+  if (a.href.includes("/issues/new")) track("issue_link_clicked", { where: a.closest("#hint-none") ? "no_space_hint" : "faq" });
+  else if (a.classList.contains("mail-link")) track("contact_email_clicked");
+  else if (a.classList.contains("missing")) { $("faq-carrier").open = true; track("missing_carrier_clicked"); }
+});
 function wireDonate() {
   if (!cfg.DONATE_URL) return;
   document.querySelectorAll("a.donate-link").forEach((a) => { a.href = cfg.DONATE_URL; });

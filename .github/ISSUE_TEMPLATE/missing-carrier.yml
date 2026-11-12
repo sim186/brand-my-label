@@ -1,0 +1,52 @@
+name: Corriere mancante / Missing courier
+description: Un'etichetta non viene riconosciuta o il logo finisce nel posto sbagliato. / A label isn't handled or the logo lands in the wrong place.
+title: "[Corriere] "
+labels: ["carrier"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **Le issue sono pubbliche.** Non allegare etichette vere con nomi, indirizzi o telefoni.
+        Copri i dati personali (rettangoli neri) prima di allegare uno screenshot,
+        oppure manda il PDF in privato via email (indirizzo sul sito).
+
+        ⚠️ **Issues are public.** Don't attach real labels with names, addresses or phone numbers.
+        Black out personal data before attaching a screenshot, or send the PDF privately by email (address on the website).
+  - type: input
+    id: carrier
+    attributes:
+      label: Corriere / Courier
+      placeholder: es. GLS, SDA, Mondial Relay, UPS…
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Da dove arriva l'etichetta? / Where does the label come from?
+      placeholder: es. Vinted, Subito, eBay, sito del corriere…
+  - type: dropdown
+    id: problem
+    attributes:
+      label: Cosa succede? / What happens?
+      options:
+        - Il logo non viene aggiunto (nessuno spazio) / No logo added (no space)
+        - Il logo copre qualcosa / The logo covers something
+        - Il logo viene tagliato via / The logo gets cut off
+        - Errore durante il caricamento / Upload error
+        - Altro / Other
+    validations:
+      required: true
+  - type: dropdown
+    id: format
+    attributes:
+      label: Formato pagina / Page format
+      options:
+        - A4, etichetta in alto / A4, label on top
+        - A4, striscia da ritagliare / A4, cut-out strip
+        - A6 o più piccolo / A6 or smaller
+        - Non so / Don't know
+  - type: textarea
+    id: details
+    attributes:
+      label: Dettagli / Details
+      description: Uno screenshot con i dati personali coperti aiuta molto. / A screenshot with personal data blacked out helps a lot.
