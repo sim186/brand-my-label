@@ -77,6 +77,14 @@ def fill(src: str, strings: dict) -> str:
     src = re.sub(r'(<img\b[^>]*\sdata-i18n-alt="(\w+)")',
                  lambda m: m.group(1).replace(" data-i18n-alt", f' alt="{html.escape(strings[m.group(2)])}" data-i18n-alt', 1)
                  if " alt=" not in m.group(1) else m.group(1), src)
+    # aria-label from data-i18n-aria (replace an existing aria-label value)
+    def aria(m):
+        tag = m.group(0)
+        val = html.escape(strings[m.group(1)], quote=True)
+        if re.search(r'\saria-label="[^"]*"', tag):
+            return re.sub(r'(\saria-label=")[^"]*(")', lambda a: a.group(1) + val + a.group(2), tag, count=1)
+        return tag.replace(" data-i18n-aria", f' aria-label="{val}" data-i18n-aria', 1)
+    src = re.sub(r'<\w+\b[^>]*\sdata-i18n-aria="(\w+)"[^>]*>', aria, src)
     return src
 
 

@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// apply saved theme before first paint (no flash)
+(function () { try { var v = localStorage.getItem("bml-theme"); if (v === "light" || v === "dark") document.documentElement.dataset.theme = v; } catch (_) {} })();
+</script>
 {{HEAD}}
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='4' y='6' width='24' height='20' rx='3' fill='%23111'/><rect x='9' y='18' width='14' height='4' rx='1' fill='%23f5c84c'/></svg>">
 <style>
@@ -14,6 +18,9 @@
     :root:not([data-theme="light"]) {
       --bg: #141310; --card: #1d1c18; --ink: #f1eee6; --muted: #a39e90; --line: #34322b;
     }
+  }
+  :root[data-theme="dark"] {
+      --bg: #141310; --card: #1d1c18; --ink: #f1eee6; --muted: #a39e90; --line: #34322b;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
@@ -45,13 +52,23 @@
   .ico { width: 1.1em; height: 1.1em; vertical-align: -0.18em; }
   footer a { display: inline-flex; gap: 4px; align-items: center; }
   footer { margin-top: 48px; font-size: 13px; color: var(--muted); }
+  .theme { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+  .theme:hover { color: var(--ink); }
+  .theme .ico { width: 16px; height: 16px; margin: 0; }
+  .theme .i-moon { display: none; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme .i-sun { display: none; } :root:not([data-theme="light"]) .theme .i-moon { display: inline; } }
+  :root[data-theme="dark"] .theme .i-sun { display: none; }
+  :root[data-theme="dark"] .theme .i-moon { display: inline; }
 </style>
 </head>
 <body>
 <main>
   <div class="top">
     <a class="brand" href="/"><i aria-hidden="true"></i>Brand My Label</a>
+    <span style="display:flex;gap:12px;align-items:center">
+    <button type="button" class="theme" id="theme" aria-label="Tema chiaro / scuro"><svg class="ico i-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg><svg class="ico i-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z"/></svg></button>
     <a href="/" data-cta="top">Apri lo strumento →</a>
+    </span>
   </div>
 
   <article>
@@ -150,6 +167,28 @@
     const a = e.target.closest && e.target.closest("a[data-cta]");
     if (a) posthog.capture("guide_cta_clicked", { where: a.dataset.cta, ui_lang: "it" });
   });
+})();
+
+// theme switch: system by default; a click pins the opposite of what's showing
+(function () {
+  const btn = document.getElementById("theme");
+  if (!btn) return;
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const current = () => document.documentElement.dataset.theme || (mq.matches ? "dark" : "light");
+  const label = () => {
+    const dark = current() === "dark";
+    btn.setAttribute("aria-pressed", String(dark));
+    btn.title = btn.getAttribute("aria-label");
+  };
+  btn.addEventListener("click", () => {
+    const next = current() === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("bml-theme", next); } catch (_) {}
+    label();
+    try { window.posthog && posthog.capture && posthog.capture("theme_changed", { to: next }); } catch (_) {}
+  });
+  mq.addEventListener && mq.addEventListener("change", label);
+  label();
 })();
 </script>
 </body>
