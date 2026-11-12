@@ -5,5 +5,5 @@ window.BML_CONFIG = {
   API_URL: "https://brand-my-label-493622543560.europe-west1.run.app",
   POSTHOG_PROJECT_TOKEN: "phc_sX7jPrmj6TMwJCebT9ugnEBQngWeg5fFRyLHCK47mKQT",
   POSTHOG_HOST: "https://eu.i.posthog.com",
-  DONATE_URL: "",                            // e.g. https://ko-fi.com/yourname
+  DONATE_URL: "https://ko-fi.com/seamoce",
 };
