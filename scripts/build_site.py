@@ -16,7 +16,6 @@ import html
 import json
 import re
 import subprocess
-from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -24,6 +23,15 @@ TEMPLATE = ROOT / "site" / "index.html"
 DOCS = ROOT / "docs"
 BASE = "https://labels.sim1.org"
 PAGES = {"it": "/", "en": "/en/"}
+GUIDE_TEMPLATE = ROOT / "site" / "guida.html"
+GUIDE_PATH = "/guida/logo-etichetta-vinted/"
+GUIDE = {
+    "title": "Come aggiungere il logo all'etichetta di spedizione Vinted (gratis)",
+    "description": ("Guida passo passo per mettere il logo del tuo negozio sull'etichetta di "
+                    "spedizione Vinted, Poste, BRT, InPost e DPD: in un minuto, gratis, senza "
+                    "programmi di grafica. Dove va il logo per ogni corriere e che logo usare."),
+    "published": "2026-11-12",
+}
 
 META = {
     "it": {
@@ -115,6 +123,47 @@ def head(lang: str) -> str:
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>"""
 
 
+def guide_head() -> str:
+    url = BASE + GUIDE_PATH
+    e = lambda s: html.escape(s, quote=True)  # noqa: E731
+    ld = [{
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": GUIDE["title"],
+        "description": GUIDE["description"],
+        "inLanguage": "it",
+        "datePublished": GUIDE["published"],
+        "dateModified": GUIDE["updated"],
+        "image": f"{BASE}/og-it.png",
+        "mainEntityOfPage": url,
+        "author": {"@type": "Person", "name": "Simone Celestino", "url": "https://www.sim1.org"},
+        "publisher": {"@type": "Organization", "name": "Brand My Label", "url": BASE + "/"},
+    }, {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Brand My Label", "item": BASE + "/"},
+            {"@type": "ListItem", "position": 2, "name": "Guida logo etichetta Vinted", "item": url},
+        ],
+    }]
+    return f"""<title>{e(GUIDE['title'])}</title>
+<meta name="description" content="{e(GUIDE['description'])}">
+<link rel="canonical" href="{url}">
+<meta name="theme-color" content="#f5c84c">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Brand My Label">
+<meta property="og:url" content="{url}">
+<meta property="og:title" content="{e(GUIDE['title'])}">
+<meta property="og:description" content="{e(GUIDE['description'])}">
+<meta property="og:locale" content="it_IT">
+<meta property="og:image" content="{BASE}/og-it.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{BASE}/og-it.png">
+<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>"""
+
+
 def render(lang: str, src: str, i18n: dict) -> str:
     out = src.replace("{{LANG}}", lang).replace("{{HEAD}}", head(lang))
     return fill(out, i18n[lang])
@@ -128,6 +177,13 @@ def build() -> dict[Path, str]:
         DOCS / "en" / "index.html": render("en", src, i18n),
         DOCS / "robots.txt": f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n",
     }
+    GUIDE["updated"] = GUIDE.get("updated", GUIDE["published"])
+    months = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
+              "agosto", "settembre", "ottobre", "novembre", "dicembre"]
+    y, m, d = (int(x) for x in GUIDE["updated"].split("-"))
+    files[DOCS / GUIDE_PATH.strip("/") / "index.html"] = (
+        GUIDE_TEMPLATE.read_text().replace("{{HEAD}}", guide_head())
+        .replace("{{UPDATED}}", f"{d} {months[m - 1]} {y}"))
     urls = "".join(
         f"""  <url>
     <loc>{BASE + path}</loc>
@@ -135,6 +191,11 @@ def build() -> dict[Path, str]:
     <xhtml:link rel="alternate" hreflang="en" href="{BASE}/en/"/>
   </url>
 """ for path in PAGES.values())
+    urls += f"""  <url>
+    <loc>{BASE + GUIDE_PATH}</loc>
+    <lastmod>{GUIDE["updated"]}</lastmod>
+  </url>
+"""
     files[DOCS / "sitemap.xml"] = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
