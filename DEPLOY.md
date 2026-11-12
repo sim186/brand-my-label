@@ -36,7 +36,10 @@ gcloud run deploy brand-my-label --image $R:v2 \
 - `--max-instances 2`, per-IP rate limit and upload caps bound the worst case.
 - Artifact Registry cleanup policy keeps only the 2 newest images (free tier: 0.5 GB; one image is ~90 MB).
 - Budget of 1 EUR on the project with email alerts at 1%, 50%, 100%.
-  A budget **alerts**, it does not stop spending; the caps above are what limit cost.
+  A budget alone only **alerts**; the kill switch below acts on it.
+- **Kill switch** (`ops/budget-kill-switch/`): budget → Pub/Sub `budget-alerts` → function
+  that sets the Cloud Run service to internal-only ingress when spend reaches 1 EUR.
+  Turn the API back on with `gcloud run services update brand-my-label --region europe-west1 --ingress all`.
 - `europe-west1` keeps label data in the EU (GDPR).
 
 ## Site: GitHub Pages
