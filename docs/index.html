@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brand My Label</title>
+<meta name="description" content="Put your shop logo on Vinted, Poste, InPost, BRT and DPD shipping labels. Free, nothing stored.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='4' y='6' width='24' height='20' rx='3' fill='%23111'/><rect x='9' y='18' width='14' height='4' rx='1' fill='%23f5c84c'/></svg>">
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #fff; --ink: #16150f; --muted: #6b675c;
+    --line: #e3dfd4; --accent: #f5c84c; --accent-ink: #16150f;
+    --ok: #1f7a4a; --warn: #9a5b00; --err: #b3261e;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141310; --card: #1d1c18; --ink: #f1eee6; --muted: #a39e90;
+      --line: #34322b; --ok: #5fc48d; --warn: #e0a64a; --err: #f08b84;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: clamp(30px, 6vw, 44px); line-height: 1.05; margin: 0 0 10px; letter-spacing: -0.02em; }
+  h1 mark { background: var(--accent); color: var(--accent-ink); padding: 0 .15em; border-radius: 6px; }
+  .lead { color: var(--muted); margin: 0 0 28px; max-width: 56ch; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+  .drops { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .drops { grid-template-columns: 1fr; } }
+  .drop {
+    position: relative; display: flex; flex-direction: column; gap: 4px;
+    min-height: 132px; padding: 16px; border: 2px dashed var(--line);
+    border-radius: 12px; cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .drop:hover, .drop.over { border-color: var(--ink); }
+  .drop.filled { border-style: solid; border-color: var(--ink); }
+  .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .drop b { font-size: 15px; }
+  .drop small { color: var(--muted); }
+  .drop .file { margin-top: auto; font-size: 14px; word-break: break-all; }
+  .drop img { max-height: 48px; max-width: 100%; object-fit: contain; margin-top: auto; align-self: flex-start; }
+  .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  label.check { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
+  button, a.btn {
+    font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 12px 18px;
+    background: var(--ink); color: var(--bg); cursor: pointer; text-decoration: none;
+  }
+  button.secondary, a.btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .grow { flex: 1; }
+  #status { margin-top: 14px; font-size: 14px; min-height: 1.5em; }
+  #status.ok { color: var(--ok); } #status.warn { color: var(--warn); } #status.err { color: var(--err); }
+  #result { display: none; margin-top: 16px; }
+  #result iframe { width: 100%; height: 520px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .how { margin-top: 36px; display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 560px) { .how { grid-template-columns: 1fr; } }
+  .how div { font-size: 14px; color: var(--muted); }
+  .how strong { display: block; color: var(--ink); font-size: 15px; margin-bottom: 2px; }
+  footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Your logo on every <mark>shipping label</mark></h1>
+  <p class="lead">Drop a label from Vinted, Poste, InPost, BRT or DPD and your shop logo. The logo goes
+    where there's room: under the label, or inside the cut-out strip so it survives the scissors.</p>
+
+  <form class="card" id="form">
+    <div class="drops">
+      <div class="drop" id="drop-label">
+        <input type="file" id="label" accept="application/pdf,.pdf,.html,text/html" aria-label="Shipping label">
+        <b>1. Shipping label</b>
+        <small>PDF, or the Vinted label page (.html)</small>
+        <span class="file" id="label-name"></span>
+      </div>
+      <div class="drop" id="drop-logo">
+        <input type="file" id="logo" accept="image/png,image/jpeg,image/webp" aria-label="Logo">
+        <b>2. Your logo</b>
+        <small>PNG with transparency works best</small>
+        <img id="logo-preview" alt="" hidden>
+      </div>
+    </div>
+    <div class="row">
+      <label class="check"><input type="checkbox" id="to-a4" checked> Fit small labels (A6) on A4 paper</label>
+      <span class="grow"></span>
+      <button type="submit" id="go" disabled>Brand my label</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+    <div id="result">
+      <iframe id="preview" title="Branded label preview"></iframe>
+      <div class="row">
+        <a class="btn" id="download" download>Download PDF</a>
+        <button type="button" class="secondary" id="print">Print</button>
+        <span class="grow"></span>
+        <a class="btn secondary" id="donate" target="_blank" rel="noopener" hidden>☕ Buy me a coffee</a>
+      </div>
+    </div>
+  </form>
+
+  <section class="how">
+    <div><strong>Nothing stored</strong>Labels are processed in memory and discarded. Your logo stays in this browser.</div>
+    <div><strong>Layout-aware</strong>Finds the free space on the page. No settings per courier.</div>
+    <div><strong>Open source</strong>Run it yourself, or wire it to your printer.</div>
+  </section>
+
+  <footer>
+    <a href="https://github.com/sim186/brand-my-label">Source on GitHub</a> ·
+    Anonymous usage stats, no cookies.
+  </footer>
+</main>
+
+<script src="config.js"></script>
+<script>
+// ---------------------------------------------------------------- PostHog
+(function () {
+  const cfg = window.BML_CONFIG || {};
+  if (!cfg.POSTHOG_PROJECT_TOKEN) return;
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group identify setPersonProperties get_distinct_id get_session_id captureException".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  posthog.init(cfg.POSTHOG_PROJECT_TOKEN, {
+    api_host: cfg.POSTHOG_HOST,
+    persistence: "memory",          // no cookies / storage: no consent banner needed
+    person_profiles: "identified_only",
+    autocapture: false,
+    disable_session_recording: true, // labels contain addresses: never record
+    capture_pageview: true,
+  });
+})();
+
+function track(event, props) {
+  try { window.posthog && posthog.capture && posthog.capture(event, props || {}); } catch (_) {}
+}
+function phHeaders() {
+  const h = {};
+  try {
+    if (window.posthog && posthog.get_distinct_id) {
+      h["X-POSTHOG-DISTINCT-ID"] = posthog.get_distinct_id();
+      const s = posthog.get_session_id && posthog.get_session_id();
+      if (s) h["X-POSTHOG-SESSION-ID"] = s;
+    }
+  } catch (_) {}
+  return h;
+}
+
+// ---------------------------------------------------------------- app
+const cfg = window.BML_CONFIG || {};
+const $ = (id) => document.getElementById(id);
+const state = { label: null, logo: null, url: null };
+const LOGO_KEY = "bml-logo";
+
+function setStatus(text, kind) { const s = $("status"); s.textContent = text; s.className = kind || ""; }
+function refresh() { $("go").disabled = !(state.label && state.logo); }
+
+function setLogo(blob, fromStorage) {
+  state.logo = blob;
+  const img = $("logo-preview");
+  img.src = URL.createObjectURL(blob); img.hidden = false;
+  $("drop-logo").classList.add("filled");
+  if (!fromStorage) {
+    const r = new FileReader();
+    r.onload = () => { try { localStorage.setItem(LOGO_KEY, r.result); } catch (_) {} };
+    r.readAsDataURL(blob);
+  }
+  refresh();
+}
+
+// remember the logo between visits (this browser only)
+try {
+  const saved = localStorage.getItem(LOGO_KEY);
+  if (saved) fetch(saved).then((r) => r.blob()).then((b) => setLogo(b, true)).catch(() => {});
+} catch (_) {}
+
+$("label").addEventListener("change", (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  state.label = f;
+  $("label-name").textContent = f.name;
+  $("drop-label").classList.add("filled");
+  const isHtml = /\.html?$/i.test(f.name) || f.type === "text/html";
+  track("label_selected", { input_type: isHtml ? "vinted_html" : "pdf", size_kb: Math.round(f.size / 1024) });
+  refresh();
+});
+$("logo").addEventListener("change", (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  setLogo(f, false);
+  track("logo_selected", { mime: f.type, size_kb: Math.round(f.size / 1024) });
+});
+for (const id of ["drop-label", "drop-logo"]) {
+  const el = $(id);
+  el.addEventListener("dragover", () => el.classList.add("over"));
+  el.addEventListener("dragleave", () => el.classList.remove("over"));
+  el.addEventListener("drop", () => el.classList.remove("over"));
+}
+
+const MODE_TEXT = {
+  "below-content": ["Logo added under the label.", "ok"],
+  "inside-strip-rot90": ["Logo added inside the cut-out strip.", "ok"],
+  "already-stamped": ["This label was already branded: returned unchanged.", "warn"],
+  "none": ["No free space on this label: returned without logo.", "warn"],
+};
+
+$("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const body = new FormData();
+  body.append("label", state.label, state.label.name);
+  body.append("logo", state.logo, state.logo.name || "logo.png");
+  body.append("to_a4", $("to-a4").checked ? "1" : "0");
+  $("go").disabled = true; $("result").style.display = "none";
+  setStatus("Working…");
+  track("stamp_requested", { to_a4: $("to-a4").checked });
+  try {
+    const res = await fetch(cfg.API_URL.replace(/\/$/, "") + "/api/stamp",
+                            { method: "POST", body, headers: phHeaders() });
+    if (!res.ok) {
+      let err = { error: "http_" + res.status, message: "Request failed (" + res.status + ")." };
+      try { err = await res.json(); } catch (_) {}
+      track("stamp_failed", { error_code: err.error, status: res.status });
+      setStatus(err.message, "err");
+      return;
+    }
+    const mode = res.headers.get("x-placement-mode") || "below-content";
+    const blob = await res.blob();
+    if (state.url) URL.revokeObjectURL(state.url);
+    state.url = URL.createObjectURL(blob);
+    const cd = res.headers.get("content-disposition") || "";
+    const name = (cd.match(/filename="([^"]+)"/) || [])[1] || "label-branded.pdf";
+    $("preview").src = state.url;
+    $("download").href = state.url; $("download").download = name;
+    $("result").style.display = "block";
+    const [text, kind] = MODE_TEXT[mode] || ["Done.", "ok"];
+    setStatus(text, kind);
+    track("stamp_succeeded", { placement_mode: mode, carrier: res.headers.get("x-carrier") });
+  } catch (err) {
+    track("stamp_failed", { error_code: "network" });
+    try { window.posthog && posthog.captureException && posthog.captureException(err); } catch (_) {}
+    setStatus("Could not reach the server. Try again in a moment.", "err");
+  } finally {
+    refresh();
+  }
+});
+
+$("download").addEventListener("click", () => track("branded_label_downloaded"));
+$("print").addEventListener("click", () => {
+  track("branded_label_printed");
+  try { $("preview").contentWindow.print(); } catch (_) { window.open(state.url, "_blank"); }
+});
+if (cfg.DONATE_URL) {
+  const d = $("donate"); d.href = cfg.DONATE_URL; d.hidden = false;
+  d.addEventListener("click", () => track("donate_clicked"));
+}
+</script>
+</body>
+</html>
