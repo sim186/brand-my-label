@@ -3,11 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Brand My Label</title>
-<meta name="description" content="Aggiungi il logo del tuo negozio alle etichette di spedizione di Vinted, Poste, BRT, InPost e DPD. Gratis, niente viene salvato.">
-<meta property="og:title" content="Brand My Label">
-<meta property="og:description" content="Il logo del tuo negozio su ogni etichetta di spedizione. Gratis.">
-<meta property="og:image" content="https://labels.sim1.org/examples/top-after.png">
+<title>Brand My Label: il logo del tuo negozio sulle etichette di spedizione Vinted</title>
+<meta name="description" content="Aggiungi gratis il logo del tuo negozio alle etichette di spedizione di Vinted, Poste Italiane, BRT, InPost e DPD. Carichi il PDF, scarichi l&#x27;etichetta pronta da stampare. Niente viene salvato.">
+<link rel="canonical" href="https://labels.sim1.org/">
+<link rel="alternate" hreflang="it" href="https://labels.sim1.org/">
+<link rel="alternate" hreflang="en" href="https://labels.sim1.org/en/">
+<link rel="alternate" hreflang="x-default" href="https://labels.sim1.org/">
+<meta name="theme-color" content="#f5c84c">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brand My Label">
+<meta property="og:url" content="https://labels.sim1.org/">
+<meta property="og:title" content="Il tuo logo su ogni etichetta di spedizione">
+<meta property="og:description" content="Gratis, per venditori Vinted e piccoli negozi. Carichi il PDF, scarichi l&#x27;etichetta con il logo.">
+<meta property="og:locale" content="it_IT">
+<meta property="og:image" content="https://labels.sim1.org/og-it.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Il tuo logo su ogni etichetta di spedizione">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Il tuo logo su ogni etichetta di spedizione">
+<meta name="twitter:description" content="Gratis, per venditori Vinted e piccoli negozi. Carichi il PDF, scarichi l&#x27;etichetta con il logo.">
+<meta name="twitter:image" content="https://labels.sim1.org/og-it.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Brand My Label", "url": "https://labels.sim1.org/", "inLanguage": "it", "applicationCategory": "BusinessApplication", "operatingSystem": "Any (web browser)", "description": "Aggiungi gratis il logo del tuo negozio alle etichette di spedizione di Vinted, Poste Italiane, BRT, InPost e DPD. Carichi il PDF, scarichi l'etichetta pronta da stampare. Niente viene salvato.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "image": "https://labels.sim1.org/og-it.png", "isAccessibleForFree": true, "sameAs": ["https://github.com/sim186/brand-my-label"]}</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='4' y='6' width='24' height='20' rx='3' fill='%23111'/><rect x='9' y='18' width='14' height='4' rx='1' fill='%23f5c84c'/></svg>">
 <style>
   :root {
@@ -35,8 +52,8 @@
   .brand i { width: 22px; height: 18px; border-radius: 4px; background: var(--ink); position: relative; display: inline-block; }
   .brand i::after { content: ""; position: absolute; left: 5px; right: 5px; bottom: 4px; height: 3px; border-radius: 1px; background: var(--accent); }
   .lang { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
-  .lang button { background: transparent; color: var(--muted); border: 0; padding: 5px 11px; font: 600 13px/1 inherit; font-family: inherit; cursor: pointer; border-radius: 0; }
-  .lang button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .lang a { color: var(--muted); padding: 5px 11px; font-weight: 600; font-size: 13px; line-height: 1; text-decoration: none; }
+  .lang a[aria-current="page"] { background: var(--ink); color: var(--bg); }
 
   .hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: 28px; align-items: center; margin-bottom: 26px; }
   @media (max-width: 720px) { .hero { grid-template-columns: 1fr; } }
@@ -119,112 +136,112 @@
   <div class="top">
     <span class="brand"><i aria-hidden="true"></i>Brand My Label</span>
     <div class="lang" role="group" aria-label="Lingua / Language">
-      <button type="button" data-lang="it" aria-pressed="true">IT</button>
-      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      <a href="/" hreflang="it" lang="it" data-lang="it">IT</a>
+      <a href="/en/" hreflang="en" lang="en" data-lang="en">EN</a>
     </div>
   </div>
 
   <section class="hero">
     <div>
-      <h1 data-i18n-html="h1"></h1>
-      <p class="lead" data-i18n="lead"></p>
-      <div class="chips"><span data-i18n="works_with"></span>
+      <h1 data-i18n-html="h1">Il tuo logo su ogni <mark>etichetta di spedizione</mark></h1>
+      <p class="lead" data-i18n="lead">Carichi l'etichetta e il logo del tuo negozio, scarichi il PDF pronto da stampare. Il logo finisce dove c'è spazio: sotto l'etichetta, oppure dentro la striscia da ritagliare, così non lo tagli via.</p>
+      <div class="chips"><span data-i18n="works_with">Funziona con</span>
         <span class="chip">Vinted</span><span class="chip">Poste Italiane</span><span class="chip">BRT</span>
-        <span class="chip">InPost</span><span class="chip">DPD</span><span data-i18n="and_more"></span>
-        <a href="#faq-carrier" class="missing" data-i18n="missing_link"></a>
+        <span class="chip">InPost</span><span class="chip">DPD</span><span data-i18n="and_more">e altri.</span>
+        <a href="#faq-carrier" class="missing" data-i18n="missing_link">Manca il tuo?</a>
       </div>
       <div class="cta">
-        <a class="btn" href="#app" data-i18n="cta_start"></a>
-        <button type="button" class="secondary" id="try-sample" data-i18n="cta_sample"></button>
+        <a class="btn" href="#app" data-i18n="cta_start">Inizia</a>
+        <button type="button" class="secondary" id="try-sample" data-i18n="cta_sample">Prova con un esempio</button>
       </div>
     </div>
     <div class="ba" id="ba" data-show="before">
       <div class="page">
-        <img class="before" src="examples/hero-before.png" alt="" width="1000" height="840">
-        <img class="after" src="examples/hero-after.png" width="1000" height="840" data-i18n-alt="after_alt">
+        <img class="before" src="/examples/hero-before.png" alt="" width="1000" height="840">
+        <img class="after" src="/examples/hero-after.png" width="1000" height="840" alt="Etichetta di esempio con il logo aggiunto sotto" data-i18n-alt="after_alt">
       </div>
       <div class="toggle" role="group">
-        <button type="button" data-show="before" aria-pressed="true" data-i18n="before"></button>
-        <button type="button" data-show="after" aria-pressed="false" data-i18n="after"></button>
+        <button type="button" data-show="before" aria-pressed="true" data-i18n="before">Prima</button>
+        <button type="button" data-show="after" aria-pressed="false" data-i18n="after">Dopo</button>
       </div>
     </div>
   </section>
 
-  <h2 data-i18n="how_title"></h2>
+  <h2 data-i18n="how_title">Come funziona</h2>
   <div class="steps">
-    <div class="step"><b class="n">1</b><div><strong data-i18n="s1_t"></strong><span data-i18n="s1_d"></span></div></div>
-    <div class="step"><b class="n">2</b><div><strong data-i18n="s2_t"></strong><span data-i18n="s2_d"></span></div></div>
-    <div class="step"><b class="n">3</b><div><strong data-i18n="s3_t"></strong><span data-i18n="s3_d"></span></div></div>
+    <div class="step"><b class="n">1</b><div><strong data-i18n="s1_t">Carica l'etichetta</strong><span data-i18n="s1_d">Il PDF scaricato da Vinted o dal sito del corriere. Va bene anche la pagina dell'etichetta che Vinted apre dal telefono (.html).</span></div></div>
+    <div class="step"><b class="n">2</b><div><strong data-i18n="s2_t">Carica il tuo logo</strong><span data-i18n="s2_d">PNG con sfondo trasparente è l'ideale. Viene ricordato su questo browser: la prossima volta non serve ricaricarlo.</span></div></div>
+    <div class="step"><b class="n">3</b><div><strong data-i18n="s3_t">Scarica e stampa</strong><span data-i18n="s3_d">Ricevi il PDF con il logo già posizionato. Stampa come sempre.</span></div></div>
   </div>
 
   <form class="card" id="app">
     <div class="drops">
       <div class="drop" id="drop-label">
         <input type="file" id="label" accept="application/pdf,.pdf,.html,text/html" data-i18n-aria="label_t">
-        <b data-i18n="label_t"></b>
-        <small data-i18n="label_d"></small>
+        <b data-i18n="label_t">1. Etichetta di spedizione</b>
+        <small data-i18n="label_d">PDF, oppure la pagina dell'etichetta di Vinted (.html)</small>
         <span class="file" id="label-name"></span>
       </div>
       <div class="drop" id="drop-logo">
         <input type="file" id="logo" accept="image/png,image/jpeg,image/webp" data-i18n-aria="logo_t">
-        <b data-i18n="logo_t"></b>
-        <small data-i18n="logo_d"></small>
+        <b data-i18n="logo_t">2. Il tuo logo</b>
+        <small data-i18n="logo_d">PNG con trasparenza, JPG o WebP</small>
         <img id="logo-preview" alt="" hidden>
       </div>
     </div>
     <div class="row">
-      <label class="check"><input type="checkbox" id="to-a4" checked> <span data-i18n="to_a4"></span></label>
+      <label class="check"><input type="checkbox" id="to-a4" checked> <span data-i18n="to_a4">Etichette piccole (A6): centra su foglio A4</span></label>
       <span class="grow"></span>
-      <button type="submit" id="go" disabled data-i18n="go"></button>
+      <button type="submit" id="go" disabled data-i18n="go">Aggiungi il logo</button>
     </div>
     <div class="row" style="margin-top:8px">
-      <small style="color:var(--muted)"><span data-i18n="no_files"></span> <button type="button" class="link" id="try-sample-2" data-i18n="cta_sample"></button></small>
+      <small style="color:var(--muted)"><span data-i18n="no_files">Non hai un'etichetta sotto mano?</span> <button type="button" class="link" id="try-sample-2" data-i18n="cta_sample">Prova con un esempio</button></small>
     </div>
     <div id="status" role="status" aria-live="polite"></div>
-    <small id="hint-none" hidden style="color:var(--muted)"><span data-i18n="hint_none"></span> <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener" data-i18n="hint_link"></a></small>
+    <small id="hint-none" hidden style="color:var(--muted)"><span data-i18n="hint_none">Pensi che il logo ci stia? Segnalamelo:</span> <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener" data-i18n="hint_link">apri una segnalazione</a></small>
     <div id="result">
       <iframe id="preview" data-i18n-title="preview"></iframe>
       <div class="row">
-        <a class="btn" id="download" download data-i18n="download"></a>
-        <button type="button" class="secondary" id="print" data-i18n="print"></button>
+        <a class="btn" id="download" download data-i18n="download">Scarica PDF</a>
+        <button type="button" class="secondary" id="print" data-i18n="print">Stampa</button>
         <span class="grow"></span>
-        <a class="btn secondary donate-link" data-where="result" target="_blank" rel="noopener" data-i18n="coffee_btn" hidden></a>
+        <a class="btn secondary donate-link" data-where="result" target="_blank" rel="noopener" data-i18n="coffee_btn" hidden>☕ Offrimi un caffè</a>
       </div>
     </div>
   </form>
 
-  <h2 data-i18n="layouts_title"></h2>
+  <h2 data-i18n="layouts_title">Si adatta a ogni impaginazione</h2>
   <div class="layouts">
-    <div class="card layout"><div class="thumb"><img src="examples/top-after.png" alt="" loading="lazy"></div>
-      <h3 data-i18n="l1_t"></h3><p data-i18n="l1_d"></p></div>
-    <div class="card layout"><div class="thumb"><img src="examples/strip-after.png" alt="" loading="lazy"><img class="zoom" src="examples/strip-zoom.png" alt="" loading="lazy"></div>
-      <h3 data-i18n="l2_t"></h3><p data-i18n="l2_d"></p></div>
-    <div class="card layout"><div class="thumb"><img src="examples/a6-after.png" alt="" loading="lazy"></div>
-      <h3 data-i18n="l3_t"></h3><p data-i18n="l3_d"></p></div>
+    <div class="card layout"><div class="thumb"><img src="/examples/top-after.png" alt="" loading="lazy"></div>
+      <h3 data-i18n="l1_t">Etichetta in alto</h3><p data-i18n="l1_d">Tipico di Poste e DPD su A4: il logo va centrato sotto l'etichetta.</p></div>
+    <div class="card layout"><div class="thumb"><img src="/examples/strip-after.png" alt="" loading="lazy"><img class="zoom" src="/examples/strip-zoom.png" alt="" loading="lazy"></div>
+      <h3 data-i18n="l2_t">Striscia da ritagliare</h3><p data-i18n="l2_d">Tipico di Vinted con BRT: il logo va dentro la striscia, ruotato come il testo, così resta dopo il taglio.</p></div>
+    <div class="card layout"><div class="thumb"><img src="/examples/a6-after.png" alt="" loading="lazy"></div>
+      <h3 data-i18n="l3_t">Formato piccolo A6</h3><p data-i18n="l3_d">Tipico di InPost: la pagina viene centrata su A4 con i margini giusti per la stampante.</p></div>
   </div>
 
-  <h2 data-i18n="faq_title"></h2>
-  <details><summary data-i18n="q1"></summary><p data-i18n="a1"></p></details>
-  <details><summary data-i18n="q2"></summary><p data-i18n-html="a2"></p></details>
-  <details><summary data-i18n="q3"></summary><p data-i18n="a3"></p></details>
-  <details><summary data-i18n="q4"></summary><p data-i18n="a4"></p></details>
-  <details><summary data-i18n="q5"></summary><p data-i18n-html="a5"></p></details>
-  <details id="faq-carrier"><summary data-i18n="q6"></summary><p><span data-i18n-html="a6"></span><span class="contact-mail" hidden> <span data-i18n="a6_mail"></span> <a class="mail-link"></a>.</span> <span data-i18n="a6_privacy"></span></p></details>
+  <h2 data-i18n="faq_title">Domande frequenti</h2>
+  <details><summary data-i18n="q1">Salvate le mie etichette?</summary><p data-i18n="a1">No. L'etichetta viene elaborata in memoria e cancellata subito: non viene scritta su disco né registrata nei log. Il logo resta solo nel tuo browser.</p></details>
+  <details><summary data-i18n="q2">Quanto costa?</summary><p data-i18n-html="a2">È gratis. Se ti fa risparmiare tempo puoi <a class="donate-link" data-where="faq" target="_blank" rel="noopener">offrirmi un caffè su Ko-fi</a>, ma non è obbligatorio.</p></details>
+  <details><summary data-i18n="q3">E se non c'è spazio per il logo?</summary><p data-i18n="a3">Ti restituiamo l'etichetta senza modifiche e te lo diciamo. Non copriamo mai codici a barre o indirizzi.</p></details>
+  <details><summary data-i18n="q4">Che logo funziona meglio?</summary><p data-i18n="a4">Un PNG con sfondo trasparente, in bianco e nero o comunque scuro: le stampanti delle etichette spesso sono in bianco e nero.</p></details>
+  <details><summary data-i18n="q5">Posso usarlo con la mia stampante, in automatico?</summary><p data-i18n-html="a5">Sì: il codice è open source su <a href="https://github.com/sim186/brand-my-label">GitHub</a>. C'è anche una versione da riga di comando da collegare alla tua stampante.</p></details>
+  <details id="faq-carrier"><summary data-i18n="q6">Manca il tuo corriere o il logo finisce nel posto sbagliato?</summary><p><span data-i18n-html="a6">Fammelo sapere: <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener">apri una segnalazione su GitHub</a> (c'è un modulo apposito).</span><span class="contact-mail" hidden> <span data-i18n="a6_mail">Oppure scrivimi a</span> <a class="mail-link"></a>.</span> <span data-i18n="a6_privacy">Le segnalazioni su GitHub sono pubbliche: copri nomi e indirizzi prima di allegare uno screenshot, oppure manda il PDF via email.</span></p></details>
 
   <div class="coffee card" id="coffee" hidden>
-    <p data-i18n="coffee_d"></p>
-    <a class="btn donate-link" data-where="card" target="_blank" rel="noopener" data-i18n="coffee_btn"></a>
+    <p data-i18n="coffee_d">Brand My Label è gratis e senza pubblicità. Se ti è utile, un caffè aiuta a tenerlo online.</p>
+    <a class="btn donate-link" data-where="card" target="_blank" rel="noopener" data-i18n="coffee_btn">☕ Offrimi un caffè</a>
   </div>
 
   <footer>
-    <span data-i18n="footer_stats"></span> ·
+    <span data-i18n="footer_stats">Statistiche d'uso anonime, nessun cookie.</span> ·
     <a href="https://github.com/sim186/brand-my-label">GitHub</a>
     <span class="donate-wrap" hidden> · <a class="donate-link" data-where="footer" target="_blank" rel="noopener">Ko-fi</a></span><br>
-    <span data-i18n="disclaimer"></span>
+    <span data-i18n="disclaimer">Progetto indipendente, non affiliato a Vinted, Poste Italiane, BRT, InPost o DPD. I nomi citati sono marchi dei rispettivi proprietari.</span>
   </footer>
 </main>
 
-<script src="config.js"></script>
+<script src="/config.js"></script>
 <script>
 // ---------------------------------------------------------------- i18n
 const I18N = {
@@ -339,25 +356,19 @@ const I18N = {
     disclaimer: 'Independent project, not affiliated with Vinted, Poste Italiane, BRT, InPost or DPD. Names mentioned are trademarks of their respective owners.',
   },
 };
-let LANG = "it";
+let LANG = document.documentElement.lang === "en" ? "en" : "it";
 const t = (k) => I18N[LANG][k] ?? I18N.it[k] ?? k;
-function applyLang(lang) {
-  LANG = I18N[lang] ? lang : "it";
-  document.documentElement.lang = LANG;
+// Static text is pre-rendered by scripts/build_site.py; this only fills
+// dynamic bits (e.g. links re-wired after render) and keeps both in sync.
+function applyLang() {
   document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
   document.querySelectorAll("[data-i18n-alt]").forEach((el) => { el.alt = t(el.dataset.i18nAlt); });
   document.querySelectorAll("[data-i18n-title]").forEach((el) => { el.title = t(el.dataset.i18nTitle); });
   document.querySelectorAll("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
-  document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
-  try { localStorage.setItem("bml-lang", LANG); } catch (_) {}
+  document.querySelectorAll(".lang a").forEach((a) => { if (a.dataset.lang === LANG) a.setAttribute("aria-current", "page"); });
 }
-(function initLang() {
-  let saved = null;
-  try { saved = localStorage.getItem("bml-lang"); } catch (_) {}
-  const nav = (navigator.language || "it").slice(0, 2).toLowerCase();
-  applyLang(saved || (nav === "it" ? "it" : "en"));
-})();
+applyLang();
 
 // ---------------------------------------------------------------- PostHog
 (function () {
@@ -404,11 +415,7 @@ function setStatus(key, kind, raw) {
 }
 function refresh() { $("go").disabled = !(state.label && state.logo); }
 
-document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => {
-  applyLang(b.dataset.lang);
-  if (state.status && !state.status.raw) setStatus(state.status.key, state.status.kind);
-  track("language_changed", { to: LANG });
-}));
+document.querySelectorAll(".lang a").forEach((a) => a.addEventListener("click", () => track("language_changed", { to: a.dataset.lang })));
 
 function setLabel(file) {
   state.label = file;
@@ -459,8 +466,8 @@ async function trySample(where) {
   track("sample_tried", { where });
   try {
     const [pdf, logo] = await Promise.all([
-      fetch("examples/sample-top.pdf").then((r) => r.blob()),
-      fetch("examples/sample-logo.png").then((r) => r.blob()),
+      fetch("/examples/sample-top.pdf").then((r) => r.blob()),
+      fetch("/examples/sample-logo.png").then((r) => r.blob()),
     ]);
     state.sample = true;
     setLabel(new File([pdf], "esempio-etichetta.pdf", { type: "application/pdf" }));
@@ -570,8 +577,7 @@ function wireDonate() {
   document.querySelectorAll("a.donate-link").forEach((a) => { a.href = cfg.DONATE_URL; });
 }
 wireDonate();
-const _applyLang = applyLang;
-applyLang = (l) => { _applyLang(l); wireDonate(); };
+
 </script>
 </body>
 </html>

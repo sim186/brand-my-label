@@ -180,6 +180,50 @@ def save_png(img: Image.Image, name: str):
     print("wrote", name, img.size)
 
 
+def make_og(lang: str, title: list[str], sub: str):
+    """1200x630 social preview: headline left, branded label right."""
+    W, H = 1200, 630
+    ink, bg, acc = (22, 21, 15), (246, 244, 239), (245, 200, 76)
+    img = Image.new("RGB", (W, H), bg)
+    d = ImageDraw.Draw(img)
+    f_title = ImageFont.load_default(size=64)
+    f_sub = ImageFont.load_default(size=30)
+    f_brand = ImageFont.load_default(size=30)
+    # brand mark
+    d.rounded_rectangle((70, 64, 110, 96), radius=6, fill=ink)
+    d.rounded_rectangle((80, 84, 100, 89), radius=2, fill=acc)
+    d.text((124, 62), "Brand My Label", font=f_brand, fill=ink, stroke_width=1, stroke_fill=ink)
+    # shrink the headline until the widest line fits the left column
+    size = 66
+    while size > 40 and max(d.textlength(l, font=ImageFont.load_default(size=size)) for l in title) > 560:
+        size -= 2
+    f_title = ImageFont.load_default(size=size)
+    y = 140
+    for i, line in enumerate(title):
+        if i == len(title) - 1:  # highlight last line like the site's <mark>
+            x0, y0, x1, y1 = d.textbbox((70, y), line, font=f_title, stroke_width=2)
+            d.rounded_rectangle((x0 - 10, y0 - 6, x1 + 10, y1 + 10), radius=10, fill=acc)
+        d.text((70, y), line, font=f_title, fill=ink, stroke_width=2, stroke_fill=ink)
+        y += round(size * 1.25)
+    d.text((70, y + 24), sub, font=f_sub, fill=(107, 103, 92))
+    d.text((70, 548), "labels.sim1.org", font=f_sub, fill=ink, stroke_width=1, stroke_fill=ink)
+    # label card on the right, slightly rotated
+    hero = Image.open(OUT / "hero-after.png").convert("RGB")
+    hero = hero.resize((430, round(430 * hero.height / hero.width)), Image.LANCZOS)
+    card = Image.new("RGBA", (hero.width + 24, hero.height + 24), (0, 0, 0, 0))
+    ImageDraw.Draw(card).rounded_rectangle((0, 0, card.width - 1, card.height - 1), radius=16, fill=(255, 255, 255, 255))
+    card.paste(hero, (12, 12))
+    card = card.rotate(-4, expand=True, resample=Image.BICUBIC)
+    shadow = Image.new("RGBA", card.size, (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).rounded_rectangle((14, 18, card.width - 6, card.height - 2), radius=18, fill=(0, 0, 0, 40))
+    x, y = W - card.width - 40, (H - card.height) // 2
+    img.paste(shadow, (x, y), shadow)
+    img.paste(card, (x, y), card)
+    path = ROOT / "docs" / f"og-{lang}.png"
+    img.save(path, "PNG", optimize=True)
+    print("wrote", path.name, img.size)
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     logo = make_logo()
@@ -199,6 +243,10 @@ def main():
             big = render(res.pdf, 1600)
             w, h = big.size
             save_png(big.crop((0, int(h * 0.74), int(w * 0.3), h)), "strip-zoom.png")
+    make_og("it", ["Il tuo logo", "su ogni etichetta", "di spedizione"],
+            "Vinted · Poste · BRT · InPost · DPD · gratis")
+    make_og("en", ["Your logo", "on every", "shipping label"],
+            "Vinted · Poste · BRT · InPost · DPD · free")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{HEAD}}
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='4' y='6' width='24' height='20' rx='3' fill='%23111'/><rect x='9' y='18' width='14' height='4' rx='1' fill='%23f5c84c'/></svg>">
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #fff; --ink: #16150f; --muted: #6b675c;
+    --line: #e3dfd4; --accent: #f5c84c; --accent-ink: #16150f;
+    --ok: #1f7a4a; --warn: #9a5b00; --err: #b3261e; --paper: #fff;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141310; --card: #1d1c18; --ink: #f1eee6; --muted: #a39e90;
+      --line: #34322b; --ok: #5fc48d; --warn: #e0a64a; --err: #f08b84;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 20px 16px 64px; }
+  a { color: inherit; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  .brand { font-weight: 800; letter-spacing: -0.01em; display: flex; gap: 8px; align-items: center; }
+  .brand i { width: 22px; height: 18px; border-radius: 4px; background: var(--ink); position: relative; display: inline-block; }
+  .brand i::after { content: ""; position: absolute; left: 5px; right: 5px; bottom: 4px; height: 3px; border-radius: 1px; background: var(--accent); }
+  .lang { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .lang a { color: var(--muted); padding: 5px 11px; font-weight: 600; font-size: 13px; line-height: 1; text-decoration: none; }
+  .lang a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+
+  .hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: 28px; align-items: center; margin-bottom: 26px; }
+  @media (max-width: 720px) { .hero { grid-template-columns: 1fr; } }
+  h1 { font-size: clamp(30px, 4.6vw, 42px); line-height: 1.05; margin: 0 0 12px; letter-spacing: -0.02em; }
+  h1 mark { background: var(--accent); color: var(--accent-ink); padding: 0 .15em; border-radius: 6px; }
+  .lead { color: var(--muted); margin: 0 0 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+  .missing { font-weight: 600; }
+  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; color: var(--ink); font-weight: 600; background: var(--card); }
+  .cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+  .ba { position: relative; }
+  .ba .page { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--paper); box-shadow: 0 10px 30px rgba(0,0,0,.12); }
+  .ba img { width: 100%; height: auto; display: block; }
+  .ba img.after { position: absolute; inset: 0; opacity: 0; transition: opacity .5s; }
+  .ba[data-show="after"] img.after { opacity: 1; }
+  .ba .toggle { display: flex; justify-content: center; gap: 4px; margin-top: 10px; }
+  .ba .toggle button { padding: 6px 14px; font-size: 13px; border-radius: 999px; background: transparent; color: var(--muted); border: 1px solid var(--line); }
+  .ba .toggle button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+  h2 { font-size: 22px; letter-spacing: -0.01em; margin: 44px 0 14px; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px; }
+  @media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+  .step { display: flex; gap: 12px; align-items: flex-start; }
+  .step b.n { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: 14px; }
+  .step div { font-size: 14px; color: var(--muted); }
+  .step strong { display: block; color: var(--ink); font-size: 15px; }
+
+  .drops { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .drops { grid-template-columns: 1fr; } }
+  .drop {
+    position: relative; display: flex; flex-direction: column; gap: 4px;
+    min-height: 132px; padding: 16px; border: 2px dashed var(--line);
+    border-radius: 12px; cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .drop:hover, .drop.over { border-color: var(--ink); }
+  .drop.filled { border-style: solid; border-color: var(--ink); }
+  .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .drop b { font-size: 15px; }
+  .drop small { color: var(--muted); }
+  .drop .file { margin-top: auto; font-size: 14px; word-break: break-all; }
+  .drop img { max-height: 48px; max-width: 100%; object-fit: contain; margin-top: auto; align-self: flex-start; background: #fff; border-radius: 4px; padding: 2px 4px; }
+  .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  label.check { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
+  button, a.btn {
+    font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 12px 18px;
+    background: var(--ink); color: var(--bg); cursor: pointer; text-decoration: none; display: inline-block;
+  }
+  button.secondary, a.btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button.link { background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline; font-weight: 600; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .grow { flex: 1; }
+  #status { margin-top: 14px; font-size: 14px; min-height: 1.5em; }
+  #status.ok { color: var(--ok); } #status.warn { color: var(--warn); } #status.err { color: var(--err); }
+  #result { display: none; margin-top: 16px; }
+  #result iframe { width: 100%; height: 520px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+
+  .layouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 720px) { .layouts { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 460px) { .layouts { grid-template-columns: 1fr; } }
+  .layout { padding: 12px; }
+  .layout .thumb { position: relative; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: var(--paper); }
+  .layout .thumb img { width: 100%; display: block; }
+  .layout .zoom { position: absolute; right: 8px; bottom: 8px; width: 34%; border: 2px solid var(--accent); border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.2); background: #fff; }
+  .layout h3 { font-size: 15px; margin: 10px 0 2px; }
+  .layout p { font-size: 13px; color: var(--muted); margin: 0; }
+
+  details { border-top: 1px solid var(--line); padding: 12px 0; }
+  details:last-child { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--muted); margin: 8px 0 0; font-size: 15px; }
+
+  .coffee { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 40px; }
+  .coffee p { margin: 0; color: var(--muted); max-width: 52ch; }
+  footer { margin-top: 32px; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <span class="brand"><i aria-hidden="true"></i>Brand My Label</span>
+    <div class="lang" role="group" aria-label="Lingua / Language">
+      <a href="/" hreflang="it" lang="it" data-lang="it">IT</a>
+      <a href="/en/" hreflang="en" lang="en" data-lang="en">EN</a>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div>
+      <h1 data-i18n-html="h1"></h1>
+      <p class="lead" data-i18n="lead"></p>
+      <div class="chips"><span data-i18n="works_with"></span>
+        <span class="chip">Vinted</span><span class="chip">Poste Italiane</span><span class="chip">BRT</span>
+        <span class="chip">InPost</span><span class="chip">DPD</span><span data-i18n="and_more"></span>
+        <a href="#faq-carrier" class="missing" data-i18n="missing_link"></a>
+      </div>
+      <div class="cta">
+        <a class="btn" href="#app" data-i18n="cta_start"></a>
+        <button type="button" class="secondary" id="try-sample" data-i18n="cta_sample"></button>
+      </div>
+    </div>
+    <div class="ba" id="ba" data-show="before">
+      <div class="page">
+        <img class="before" src="/examples/hero-before.png" alt="" width="1000" height="840">
+        <img class="after" src="/examples/hero-after.png" width="1000" height="840" data-i18n-alt="after_alt">
+      </div>
+      <div class="toggle" role="group">
+        <button type="button" data-show="before" aria-pressed="true" data-i18n="before"></button>
+        <button type="button" data-show="after" aria-pressed="false" data-i18n="after"></button>
+      </div>
+    </div>
+  </section>
+
+  <h2 data-i18n="how_title"></h2>
+  <div class="steps">
+    <div class="step"><b class="n">1</b><div><strong data-i18n="s1_t"></strong><span data-i18n="s1_d"></span></div></div>
+    <div class="step"><b class="n">2</b><div><strong data-i18n="s2_t"></strong><span data-i18n="s2_d"></span></div></div>
+    <div class="step"><b class="n">3</b><div><strong data-i18n="s3_t"></strong><span data-i18n="s3_d"></span></div></div>
+  </div>
+
+  <form class="card" id="app">
+    <div class="drops">
+      <div class="drop" id="drop-label">
+        <input type="file" id="label" accept="application/pdf,.pdf,.html,text/html" data-i18n-aria="label_t">
+        <b data-i18n="label_t"></b>
+        <small data-i18n="label_d"></small>
+        <span class="file" id="label-name"></span>
+      </div>
+      <div class="drop" id="drop-logo">
+        <input type="file" id="logo" accept="image/png,image/jpeg,image/webp" data-i18n-aria="logo_t">
+        <b data-i18n="logo_t"></b>
+        <small data-i18n="logo_d"></small>
+        <img id="logo-preview" alt="" hidden>
+      </div>
+    </div>
+    <div class="row">
+      <label class="check"><input type="checkbox" id="to-a4" checked> <span data-i18n="to_a4"></span></label>
+      <span class="grow"></span>
+      <button type="submit" id="go" disabled data-i18n="go"></button>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <small style="color:var(--muted)"><span data-i18n="no_files"></span> <button type="button" class="link" id="try-sample-2" data-i18n="cta_sample"></button></small>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+    <small id="hint-none" hidden style="color:var(--muted)"><span data-i18n="hint_none"></span> <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener" data-i18n="hint_link"></a></small>
+    <div id="result">
+      <iframe id="preview" data-i18n-title="preview"></iframe>
+      <div class="row">
+        <a class="btn" id="download" download data-i18n="download"></a>
+        <button type="button" class="secondary" id="print" data-i18n="print"></button>
+        <span class="grow"></span>
+        <a class="btn secondary donate-link" data-where="result" target="_blank" rel="noopener" data-i18n="coffee_btn" hidden></a>
+      </div>
+    </div>
+  </form>
+
+  <h2 data-i18n="layouts_title"></h2>
+  <div class="layouts">
+    <div class="card layout"><div class="thumb"><img src="/examples/top-after.png" alt="" loading="lazy"></div>
+      <h3 data-i18n="l1_t"></h3><p data-i18n="l1_d"></p></div>
+    <div class="card layout"><div class="thumb"><img src="/examples/strip-after.png" alt="" loading="lazy"><img class="zoom" src="/examples/strip-zoom.png" alt="" loading="lazy"></div>
+      <h3 data-i18n="l2_t"></h3><p data-i18n="l2_d"></p></div>
+    <div class="card layout"><div class="thumb"><img src="/examples/a6-after.png" alt="" loading="lazy"></div>
+      <h3 data-i18n="l3_t"></h3><p data-i18n="l3_d"></p></div>
+  </div>
+
+  <h2 data-i18n="faq_title"></h2>
+  <details><summary data-i18n="q1"></summary><p data-i18n="a1"></p></details>
+  <details><summary data-i18n="q2"></summary><p data-i18n-html="a2"></p></details>
+  <details><summary data-i18n="q3"></summary><p data-i18n="a3"></p></details>
+  <details><summary data-i18n="q4"></summary><p data-i18n="a4"></p></details>
+  <details><summary data-i18n="q5"></summary><p data-i18n-html="a5"></p></details>
+  <details id="faq-carrier"><summary data-i18n="q6"></summary><p><span data-i18n-html="a6"></span><span class="contact-mail" hidden> <span data-i18n="a6_mail"></span> <a class="mail-link"></a>.</span> <span data-i18n="a6_privacy"></span></p></details>
+
+  <div class="coffee card" id="coffee" hidden>
+    <p data-i18n="coffee_d"></p>
+    <a class="btn donate-link" data-where="card" target="_blank" rel="noopener" data-i18n="coffee_btn"></a>
+  </div>
+
+  <footer>
+    <span data-i18n="footer_stats"></span> ·
+    <a href="https://github.com/sim186/brand-my-label">GitHub</a>
+    <span class="donate-wrap" hidden> · <a class="donate-link" data-where="footer" target="_blank" rel="noopener">Ko-fi</a></span><br>
+    <span data-i18n="disclaimer"></span>
+  </footer>
+</main>
+
+<script src="/config.js"></script>
+<script>
+// ---------------------------------------------------------------- i18n
+const I18N = {
+  it: {
+    h1: 'Il tuo logo su ogni <mark>etichetta di spedizione</mark>',
+    lead: "Carichi l'etichetta e il logo del tuo negozio, scarichi il PDF pronto da stampare. Il logo finisce dove c'è spazio: sotto l'etichetta, oppure dentro la striscia da ritagliare, così non lo tagli via.",
+    works_with: 'Funziona con', and_more: 'e altri.', missing_link: 'Manca il tuo?',
+    cta_start: 'Inizia', cta_sample: 'Prova con un esempio',
+    before: 'Prima', after: 'Dopo', after_alt: 'Etichetta di esempio con il logo aggiunto sotto',
+    how_title: 'Come funziona',
+    s1_t: "Carica l'etichetta", s1_d: "Il PDF scaricato da Vinted o dal sito del corriere. Va bene anche la pagina dell'etichetta che Vinted apre dal telefono (.html).",
+    s2_t: 'Carica il tuo logo', s2_d: 'PNG con sfondo trasparente è l\'ideale. Viene ricordato su questo browser: la prossima volta non serve ricaricarlo.',
+    s3_t: 'Scarica e stampa', s3_d: 'Ricevi il PDF con il logo già posizionato. Stampa come sempre.',
+    label_t: '1. Etichetta di spedizione', label_d: "PDF, oppure la pagina dell'etichetta di Vinted (.html)",
+    logo_t: '2. Il tuo logo', logo_d: 'PNG con trasparenza, JPG o WebP',
+    to_a4: 'Etichette piccole (A6): centra su foglio A4',
+    go: 'Aggiungi il logo', no_files: 'Non hai un\'etichetta sotto mano?',
+    preview: 'Anteprima etichetta', download: 'Scarica PDF', print: 'Stampa',
+    working: 'Sto preparando l\'etichetta…',
+    mode_below: 'Logo aggiunto sotto l\'etichetta.', mode_strip: 'Logo aggiunto dentro la striscia da ritagliare.',
+    mode_already: 'Questa etichetta ha già il logo: restituita così com\'è.', mode_none: 'Non c\'è spazio libero su questa etichetta: restituita senza logo.',
+    sample_note: 'Etichetta di esempio con indirizzi inventati.',
+    err_network: 'Il server non risponde. Riprova tra poco.',
+    err: {
+      rate_limited: 'Troppe etichette in poco tempo: riprova tra qualche minuto.',
+      label_too_large: 'Il file dell\'etichetta è troppo grande (max 10 MB).',
+      logo_too_large: 'Il logo è troppo grande (max 2 MB).',
+      not_pdf: 'Il file non è un PDF né una pagina etichetta di Vinted.',
+      bad_pdf: 'Non riesco a leggere questo PDF.',
+      encrypted_pdf: 'Il PDF è protetto da password: non posso modificarlo.',
+      too_many_pages: 'Troppe pagine: carica una sola etichetta alla volta.',
+      bad_logo: 'Il logo deve essere un\'immagine PNG, JPG o WebP.',
+      html_no_pdf: 'In questa pagina non trovo il link all\'etichetta.',
+      html_fetch_failed: 'Il link all\'etichetta è scaduto: condividi di nuovo l\'etichetta da Vinted.',
+      too_large: 'L\'etichetta collegata è troppo grande.',
+      internal: 'Qualcosa è andato storto da parte nostra. Riprova.',
+    },
+    layouts_title: 'Si adatta a ogni impaginazione',
+    l1_t: 'Etichetta in alto', l1_d: 'Tipico di Poste e DPD su A4: il logo va centrato sotto l\'etichetta.',
+    l2_t: 'Striscia da ritagliare', l2_d: 'Tipico di Vinted con BRT: il logo va dentro la striscia, ruotato come il testo, così resta dopo il taglio.',
+    l3_t: 'Formato piccolo A6', l3_d: 'Tipico di InPost: la pagina viene centrata su A4 con i margini giusti per la stampante.',
+    faq_title: 'Domande frequenti',
+    q1: 'Salvate le mie etichette?', a1: 'No. L\'etichetta viene elaborata in memoria e cancellata subito: non viene scritta su disco né registrata nei log. Il logo resta solo nel tuo browser.',
+    q2: 'Quanto costa?', a2: 'È gratis. Se ti fa risparmiare tempo puoi <a class="donate-link" data-where="faq" target="_blank" rel="noopener">offrirmi un caffè su Ko-fi</a>, ma non è obbligatorio.',
+    q3: 'E se non c\'è spazio per il logo?', a3: 'Ti restituiamo l\'etichetta senza modifiche e te lo diciamo. Non copriamo mai codici a barre o indirizzi.',
+    q4: 'Che logo funziona meglio?', a4: 'Un PNG con sfondo trasparente, in bianco e nero o comunque scuro: le stampanti delle etichette spesso sono in bianco e nero.',
+    q5: 'Posso usarlo con la mia stampante, in automatico?', a5: 'Sì: il codice è open source su <a href="https://github.com/sim186/brand-my-label">GitHub</a>. C\'è anche una versione da riga di comando da collegare alla tua stampante.',
+    q6: 'Manca il tuo corriere o il logo finisce nel posto sbagliato?',
+    a6: 'Fammelo sapere: <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener">apri una segnalazione su GitHub</a> (c\'è un modulo apposito).',
+    a6_mail: 'Oppure scrivimi a',
+    a6_privacy: 'Le segnalazioni su GitHub sono pubbliche: copri nomi e indirizzi prima di allegare uno screenshot, oppure manda il PDF via email.',
+    hint_none: 'Pensi che il logo ci stia? Segnalamelo:',
+    hint_link: 'apri una segnalazione',
+    coffee_d: 'Brand My Label è gratis e senza pubblicità. Se ti è utile, un caffè aiuta a tenerlo online.',
+    coffee_btn: '☕ Offrimi un caffè',
+    footer_stats: 'Statistiche d\'uso anonime, nessun cookie.',
+    disclaimer: 'Progetto indipendente, non affiliato a Vinted, Poste Italiane, BRT, InPost o DPD. I nomi citati sono marchi dei rispettivi proprietari.',
+  },
+  en: {
+    h1: 'Your logo on every <mark>shipping label</mark>',
+    lead: 'Upload the label and your shop logo, download a print-ready PDF. The logo goes where there\'s room: under the label, or inside the cut-out strip so the scissors don\'t take it off.',
+    works_with: 'Works with', and_more: 'and more.', missing_link: 'Yours is missing?',
+    cta_start: 'Get started', cta_sample: 'Try an example',
+    before: 'Before', after: 'After', after_alt: 'Sample label with the logo added below',
+    how_title: 'How it works',
+    s1_t: 'Upload the label', s1_d: 'The PDF from Vinted or the courier\'s website. The label page Vinted opens on your phone (.html) works too.',
+    s2_t: 'Upload your logo', s2_d: 'A PNG with a transparent background is ideal. It\'s remembered in this browser, so next time you skip this step.',
+    s3_t: 'Download and print', s3_d: 'You get the PDF with the logo already in place. Print as usual.',
+    label_t: '1. Shipping label', label_d: 'PDF, or the Vinted label page (.html)',
+    logo_t: '2. Your logo', logo_d: 'PNG with transparency, JPG or WebP',
+    to_a4: 'Small labels (A6): centre on A4 paper',
+    go: 'Add my logo', no_files: 'No label at hand?',
+    preview: 'Label preview', download: 'Download PDF', print: 'Print',
+    working: 'Preparing your label…',
+    mode_below: 'Logo added under the label.', mode_strip: 'Logo added inside the cut-out strip.',
+    mode_already: 'This label already has the logo: returned unchanged.', mode_none: 'No free space on this label: returned without logo.',
+    sample_note: 'Example label with invented addresses.',
+    err_network: 'Could not reach the server. Try again in a moment.',
+    err: {
+      rate_limited: 'Too many labels in a short time: try again in a few minutes.',
+      label_too_large: 'Label file is too large (max 10 MB).',
+      logo_too_large: 'Logo is too large (max 2 MB).',
+      not_pdf: 'The file is not a PDF or a Vinted label page.',
+      bad_pdf: 'This PDF could not be read.',
+      encrypted_pdf: 'The PDF is password-protected and can\'t be changed.',
+      too_many_pages: 'Too many pages: upload one label at a time.',
+      bad_logo: 'The logo must be a PNG, JPG or WebP image.',
+      html_no_pdf: 'No label link found in this page.',
+      html_fetch_failed: 'The label link has expired: share the label from Vinted again.',
+      too_large: 'The linked label is too large.',
+      internal: 'Something went wrong on our side. Please retry.',
+    },
+    layouts_title: 'Adapts to every layout',
+    l1_t: 'Label on top', l1_d: 'Typical of Poste and DPD on A4: the logo is centred under the label.',
+    l2_t: 'Cut-out strip', l2_d: 'Typical of Vinted with BRT: the logo goes inside the strip, rotated like its text, so it survives the cut.',
+    l3_t: 'Small A6 format', l3_d: 'Typical of InPost: the page is centred on A4 with proper printer margins.',
+    faq_title: 'FAQ',
+    q1: 'Do you store my labels?', a1: 'No. The label is processed in memory and discarded right away: never written to disk or logged. Your logo stays in your browser only.',
+    q2: 'How much does it cost?', a2: 'It\'s free. If it saves you time you can <a class="donate-link" data-where="faq" target="_blank" rel="noopener">buy me a coffee on Ko-fi</a>, but there\'s no obligation.',
+    q3: 'What if there\'s no room for the logo?', a3: 'You get the label back unchanged and we tell you. We never cover barcodes or addresses.',
+    q4: 'Which logo works best?', a4: 'A PNG with a transparent background, black-and-white or dark: label printers are often monochrome.',
+    q5: 'Can I hook it up to my printer?', a5: 'Yes: the code is open source on <a href="https://github.com/sim186/brand-my-label">GitHub</a>, including a command-line version you can wire to your printer.',
+    q6: 'Your courier is missing or the logo lands in the wrong place?',
+    a6: 'Let me know: <a href="https://github.com/sim186/brand-my-label/issues/new?template=missing-carrier.yml" target="_blank" rel="noopener">open an issue on GitHub</a> (there\'s a form for it).',
+    a6_mail: 'Or email me at',
+    a6_privacy: 'GitHub issues are public: black out names and addresses before attaching a screenshot, or send the PDF by email.',
+    hint_none: 'Think the logo should fit? Tell me:',
+    hint_link: 'open an issue',
+    coffee_d: 'Brand My Label is free and ad-free. If it helps you, a coffee helps keep it online.',
+    coffee_btn: '☕ Buy me a coffee',
+    footer_stats: 'Anonymous usage stats, no cookies.',
+    disclaimer: 'Independent project, not affiliated with Vinted, Poste Italiane, BRT, InPost or DPD. Names mentioned are trademarks of their respective owners.',
+  },
+};
+let LANG = document.documentElement.lang === "en" ? "en" : "it";
+const t = (k) => I18N[LANG][k] ?? I18N.it[k] ?? k;
+// Static text is pre-rendered by scripts/build_site.py; this only fills
+// dynamic bits (e.g. links re-wired after render) and keeps both in sync.
+function applyLang() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll("[data-i18n-alt]").forEach((el) => { el.alt = t(el.dataset.i18nAlt); });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => { el.title = t(el.dataset.i18nTitle); });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
+  document.querySelectorAll(".lang a").forEach((a) => { if (a.dataset.lang === LANG) a.setAttribute("aria-current", "page"); });
+}
+applyLang();
+
+// ---------------------------------------------------------------- PostHog
+(function () {
+  const cfg = window.BML_CONFIG || {};
+  if (!cfg.POSTHOG_PROJECT_TOKEN) return;
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group identify setPersonProperties get_distinct_id get_session_id captureException".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  posthog.init(cfg.POSTHOG_PROJECT_TOKEN, {
+    api_host: cfg.POSTHOG_HOST,
+    persistence: "memory",          // no cookies / storage: no consent banner needed
+    person_profiles: "identified_only",
+    autocapture: false,
+    disable_session_recording: true, // labels contain addresses: never record
+    capture_pageview: true,
+  });
+  posthog.register({ ui_lang: LANG });
+})();
+
+function track(event, props) {
+  try { window.posthog && posthog.capture && posthog.capture(event, Object.assign({ ui_lang: LANG }, props || {})); } catch (_) {}
+}
+function phHeaders() {
+  const h = {};
+  try {
+    if (window.posthog && posthog.get_distinct_id) {
+      h["X-POSTHOG-DISTINCT-ID"] = posthog.get_distinct_id();
+      const s = posthog.get_session_id && posthog.get_session_id();
+      if (s) h["X-POSTHOG-SESSION-ID"] = s;
+    }
+  } catch (_) {}
+  return h;
+}
+
+// ---------------------------------------------------------------- app
+const cfg = window.BML_CONFIG || {};
+const $ = (id) => document.getElementById(id);
+const state = { label: null, logo: null, url: null, sample: false, status: null };
+const LOGO_KEY = "bml-logo";
+
+function setStatus(key, kind, raw) {
+  state.status = key ? { key, kind, raw } : null;
+  const s = $("status");
+  s.textContent = key ? (raw || t(key)) : "";
+  s.className = kind || "";
+}
+function refresh() { $("go").disabled = !(state.label && state.logo); }
+
+document.querySelectorAll(".lang a").forEach((a) => a.addEventListener("click", () => track("language_changed", { to: a.dataset.lang })));
+
+function setLabel(file) {
+  state.label = file;
+  $("label-name").textContent = file.name;
+  $("drop-label").classList.add("filled");
+  refresh();
+}
+function setLogo(blob, persist) {
+  state.logo = blob;
+  const img = $("logo-preview");
+  img.src = URL.createObjectURL(blob); img.hidden = false;
+  $("drop-logo").classList.add("filled");
+  if (persist) {
+    const r = new FileReader();
+    r.onload = () => { try { localStorage.setItem(LOGO_KEY, r.result); } catch (_) {} };
+    r.readAsDataURL(blob);
+  }
+  refresh();
+}
+
+// remember the logo between visits (this browser only)
+try {
+  const saved = localStorage.getItem(LOGO_KEY);
+  if (saved) fetch(saved).then((r) => r.blob()).then((b) => setLogo(new File([b], "logo.png", { type: b.type }), false)).catch(() => {});
+} catch (_) {}
+
+$("label").addEventListener("change", (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  state.sample = false;
+  setLabel(f);
+  const isHtml = /\.html?$/i.test(f.name) || f.type === "text/html";
+  track("label_selected", { input_type: isHtml ? "vinted_html" : "pdf", size_kb: Math.round(f.size / 1024) });
+});
+$("logo").addEventListener("change", (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  setLogo(f, true);
+  track("logo_selected", { mime: f.type, size_kb: Math.round(f.size / 1024) });
+});
+for (const id of ["drop-label", "drop-logo"]) {
+  const el = $(id);
+  el.addEventListener("dragover", () => el.classList.add("over"));
+  el.addEventListener("dragleave", () => el.classList.remove("over"));
+  el.addEventListener("drop", () => el.classList.remove("over"));
+}
+
+// onboarding: load an invented label + logo and run it
+async function trySample(where) {
+  track("sample_tried", { where });
+  try {
+    const [pdf, logo] = await Promise.all([
+      fetch("/examples/sample-top.pdf").then((r) => r.blob()),
+      fetch("/examples/sample-logo.png").then((r) => r.blob()),
+    ]);
+    state.sample = true;
+    setLabel(new File([pdf], "esempio-etichetta.pdf", { type: "application/pdf" }));
+    // keep the user's own logo if they already have one
+    if (!state.logo) setLogo(new File([logo], "esempio-logo.png", { type: "image/png" }), false);
+    $("app").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("app").requestSubmit();
+  } catch (_) {
+    setStatus("err_network", "err");
+  }
+}
+// hero before/after: flips by itself until the visitor picks one
+(function () {
+  const ba = $("ba");
+  const btns = ba.querySelectorAll(".toggle button");
+  const show = (v) => { ba.dataset.show = v; btns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.show === v))); };
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let timer = reduce ? null : setInterval(() => show(ba.dataset.show === "after" ? "before" : "after"), 2200);
+  btns.forEach((b) => b.addEventListener("click", () => { clearInterval(timer); show(b.dataset.show); }));
+  if (reduce) show("after");
+})();
+$("try-sample").addEventListener("click", () => trySample("hero"));
+$("try-sample-2").addEventListener("click", () => trySample("form"));
+
+const MODE = {
+  "below-content": ["mode_below", "ok"],
+  "inside-strip-rot90": ["mode_strip", "ok"],
+  "already-stamped": ["mode_already", "warn"],
+  "none": ["mode_none", "warn"],
+};
+
+$("app").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const body = new FormData();
+  body.append("label", state.label, state.label.name);
+  body.append("logo", state.logo, state.logo.name || "logo.png");
+  body.append("to_a4", $("to-a4").checked ? "1" : "0");
+  $("go").disabled = true; $("result").style.display = "none"; $("hint-none").hidden = true;
+  setStatus("working");
+  track("stamp_requested", { to_a4: $("to-a4").checked, sample: state.sample });
+  try {
+    const res = await fetch(cfg.API_URL.replace(/\/$/, "") + "/api/stamp",
+                            { method: "POST", body, headers: phHeaders() });
+    if (!res.ok) {
+      let err = { error: "http_" + res.status };
+      try { err = await res.json(); } catch (_) {}
+      track("stamp_failed", { error_code: err.error, status: res.status, sample: state.sample });
+      setStatus("err", "err", I18N[LANG].err[err.error] || I18N[LANG].err.internal);
+      return;
+    }
+    const mode = res.headers.get("x-placement-mode") || "below-content";
+    const blob = await res.blob();
+    if (state.url) URL.revokeObjectURL(state.url);
+    state.url = URL.createObjectURL(blob);
+    const cd = res.headers.get("content-disposition") || "";
+    const name = (cd.match(/filename="([^"]+)"/) || [])[1] || "label-branded.pdf";
+    $("preview").src = state.url;
+    $("download").href = state.url; $("download").download = name;
+    $("result").style.display = "block";
+    $("hint-none").hidden = mode !== "none";
+    if (cfg.DONATE_URL && !state.sample) document.querySelector('#result .donate-link').hidden = false;
+    const [key, kind] = MODE[mode] || ["mode_below", "ok"];
+    setStatus(key, kind, state.sample ? t(key) + " " + t("sample_note") : null);
+    track("stamp_succeeded", { placement_mode: mode, carrier: res.headers.get("x-carrier"), sample: state.sample });
+  } catch (err) {
+    track("stamp_failed", { error_code: "network", sample: state.sample });
+    try { window.posthog && posthog.captureException && posthog.captureException(err); } catch (_) {}
+    setStatus("err_network", "err");
+  } finally {
+    refresh();
+  }
+});
+
+$("download").addEventListener("click", () => track("branded_label_downloaded", { sample: state.sample }));
+$("print").addEventListener("click", () => {
+  track("branded_label_printed", { sample: state.sample });
+  try { $("preview").contentWindow.print(); } catch (_) { window.open(state.url, "_blank"); }
+});
+// donate links: card, result row, FAQ, footer. FAQ links are re-rendered on
+// language change, so wire them on every applyLang via delegation.
+if (cfg.DONATE_URL) {
+  $("coffee").hidden = false;
+  document.querySelectorAll(".donate-wrap").forEach((el) => { el.hidden = false; });
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("a.donate-link");
+    if (a) track("donate_clicked", { where: a.dataset.where });
+  });
+}
+// contact email: kept split in config and assembled here, so it isn't a
+// plain mailto in the HTML for scrapers
+(function () {
+  const parts = cfg.CONTACT_EMAIL_PARTS;
+  if (!parts || parts.length !== 2) return;
+  const addr = parts[0] + "@" + parts[1];
+  document.querySelectorAll(".mail-link").forEach((a) => { a.href = "mailto:" + addr + "?subject=Brand%20My%20Label"; a.textContent = addr; });
+  document.querySelectorAll(".contact-mail").forEach((el) => { el.hidden = false; });
+})();
+document.addEventListener("click", (e) => {
+  const a = e.target.closest && e.target.closest("a");
+  if (!a) return;
+  if (a.href.includes("/issues/new")) track("issue_link_clicked", { where: a.closest("#hint-none") ? "no_space_hint" : "faq" });
+  else if (a.classList.contains("mail-link")) track("contact_email_clicked");
+  else if (a.classList.contains("missing")) { $("faq-carrier").open = true; track("missing_carrier_clicked"); }
+});
+function wireDonate() {
+  if (!cfg.DONATE_URL) return;
+  document.querySelectorAll("a.donate-link").forEach((a) => { a.href = cfg.DONATE_URL; });
+}
+wireDonate();
+
+</script>
+</body>
+</html>

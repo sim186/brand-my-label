@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://labels.sim1.org/sitemap.xml

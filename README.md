@@ -56,6 +56,7 @@ so you don't have to pick it again.
 uv venv && uv pip install -e ".[server,dev]"
 pytest
 POSTHOG_DISABLED=1 uvicorn server.main:app --port 8091   # API
+python scripts/build_site.py                               # after editing site/
 python -m http.server 8000 -d docs                         # site
 ```
 
@@ -64,7 +65,9 @@ python -m http.server 8000 -d docs                         # site
 ```
 brand_my_label/  stamping core (pure, bytes in/bytes out) + Vinted HTML fetcher + CLI
 server/          FastAPI app for Cloud Run (limits, rate limit, CORS, analytics)
-docs/            static site for GitHub Pages
+site/            page template (edit this, not docs/index.html)
+scripts/         build_site.py: renders docs/ (IT at /, EN at /en/, SEO tags, sitemap)
+docs/            generated static site for GitHub Pages
 tests/           synthetic labels only, never commit real ones
 ```
 
