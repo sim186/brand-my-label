@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// apply saved theme before first paint (no flash)
+(function () { try { var v = localStorage.getItem("bml-theme"); if (v === "light" || v === "dark") document.documentElement.dataset.theme = v; } catch (_) {} })();
+</script>
+{{HEAD}}
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  :root {
+    --bg: #f6f4ef; --card: #fff; --ink: #16150f; --muted: #6b675c;
+    --line: #e3dfd4; --accent: #f5c84c; --accent-ink: #16150f; --paper: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141310; --card: #1d1c18; --ink: #f1eee6; --muted: #a39e90; --line: #34322b;
+    }
+  }
+  :root[data-theme="dark"] {
+      --bg: #141310; --card: #1d1c18; --ink: #f1eee6; --muted: #a39e90; --line: #34322b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 20px 16px 72px; }
+  a { color: inherit; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; font-size: 15px; }
+  .brand { font-weight: 800; display: flex; gap: 8px; align-items: center; text-decoration: none; }
+  .brand i { width: 22px; height: 18px; border-radius: 4px; background: var(--ink); position: relative; display: inline-block; }
+  .brand i::after { content: ""; position: absolute; left: 5px; right: 5px; bottom: 4px; height: 3px; border-radius: 1px; background: var(--accent); }
+  nav.crumbs { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+  h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 14px; }
+  h2 { font-size: 23px; letter-spacing: -0.01em; margin: 40px 0 10px; }
+  h3 { font-size: 18px; margin: 24px 0 6px; }
+  p, li { color: var(--ink); }
+  .lead { color: var(--muted); font-size: 19px; }
+  .meta { font-size: 14px; color: var(--muted); }
+  ol li, ul li { margin: 6px 0; }
+  figure { margin: 22px 0; }
+  figure .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  figure img { width: 100%; height: auto; display: block; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; text-align: center; }
+  .cta { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin: 28px 0; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .cta p { margin: 0; max-width: 46ch; }
+  .btn { font-weight: 600; border-radius: 10px; padding: 12px 18px; background: var(--ink); color: var(--bg); text-decoration: none; display: inline-block; }
+  .note { border-left: 4px solid var(--accent); padding: 4px 0 4px 14px; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 12px 0; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .ico { width: 1.1em; height: 1.1em; vertical-align: -0.18em; }
+  footer a { display: inline-flex; gap: 4px; align-items: center; }
+  footer { margin-top: 48px; font-size: 13px; color: var(--muted); }
+  .theme { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+  .theme:hover { color: var(--ink); }
+  .theme .ico { width: 16px; height: 16px; margin: 0; }
+  .theme .i-moon { display: none; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme .i-sun { display: none; } :root:not([data-theme="light"]) .theme .i-moon { display: inline; } }
+  :root[data-theme="dark"] .theme .i-sun { display: none; }
+  :root[data-theme="dark"] .theme .i-moon { display: inline; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <a class="brand" href="/"><i aria-hidden="true"></i>Brand My Label</a>
+    <span style="display:flex;gap:12px;align-items:center">
+    <button type="button" class="theme" id="theme" aria-label="Tema chiaro / scuro"><svg class="ico i-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></g></svg><svg class="ico i-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z"/></svg></button>
+    <a href="/" data-cta="top">Apri lo strumento →</a>
+    </span>
+  </div>
+
+{{ARTICLE}}
+
+  <footer>
+    <a href="/">Brand My Label</a> · <a href="https://github.com/sim186/brand-my-label"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a> · <a href="https://ko-fi.com/seamoce"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg>Ko-fi</a><br>
+    Progetto indipendente, non affiliato a Vinted, Poste Italiane, BRT, InPost o DPD. I nomi citati sono marchi dei rispettivi proprietari.
+  </footer>
+</main>
+<script src="/config.js"></script>
+<script>
+(function () {
+  const cfg = window.BML_CONFIG || {};
+  if (!cfg.POSTHOG_PROJECT_TOKEN) return;
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group identify setPersonProperties get_distinct_id get_session_id captureException".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  posthog.init(cfg.POSTHOG_PROJECT_TOKEN, { api_host: cfg.POSTHOG_HOST, persistence: "memory", person_profiles: "identified_only", autocapture: false, disable_session_recording: true, capture_pageview: true });
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("a[data-cta]");
+    if (a) posthog.capture("guide_cta_clicked", { where: a.dataset.cta, ui_lang: "it" });
+  });
+})();
+
+// theme switch: system by default; a click pins the opposite of what's showing
+(function () {
+  const btn = document.getElementById("theme");
+  if (!btn) return;
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const current = () => document.documentElement.dataset.theme || (mq.matches ? "dark" : "light");
+  const label = () => {
+    const dark = current() === "dark";
+    btn.setAttribute("aria-pressed", String(dark));
+    btn.title = btn.getAttribute("aria-label");
+  };
+  btn.addEventListener("click", () => {
+    const next = current() === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("bml-theme", next); } catch (_) {}
+    label();
+    try { window.posthog && posthog.capture && posthog.capture("theme_changed", { to: next }); } catch (_) {}
+  });
+  mq.addEventListener && mq.addEventListener("change", label);
+  label();
+})();
+</script>
+</body>
+</html>
