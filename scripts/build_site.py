@@ -236,7 +236,19 @@ def fill(src: str, strings: dict) -> str:
     return src
 
 
-def head(lang: str) -> str:
+def faq_ld(strings: dict) -> dict:
+    """FAQPage markup built from the visible FAQ strings (q1..q6), tags stripped."""
+    def plain(t: str) -> str:
+        return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", t))).strip()
+    items = []
+    for i in range(1, 7):
+        a = strings[f"a{i}"] + (" " + strings["a6_privacy"] if i == 6 else "")
+        items.append({"@type": "Question", "name": plain(strings[f"q{i}"]),
+                      "acceptedAnswer": {"@type": "Answer", "text": plain(a)}})
+    return {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": items}
+
+
+def head(lang: str, strings: dict) -> str:
     m = META[lang]
     url = BASE + PAGES[lang]
     other = "en" if lang == "it" else "it"
@@ -284,7 +296,7 @@ def head(lang: str) -> str:
 <meta name="twitter:title" content="{e(m['og_title'])}">
 <meta name="twitter:description" content="{e(m['og_desc'])}">
 <meta name="twitter:image" content="{BASE}/og-{lang}.png">
-<script type="application/ld+json">{json.dumps([site, ld], ensure_ascii=False)}</script>"""
+<script type="application/ld+json">{json.dumps([site, ld, faq_ld(strings)], ensure_ascii=False)}</script>"""
 
 
 def guide_head() -> str:
@@ -329,7 +341,7 @@ def guide_head() -> str:
 
 
 def render(lang: str, src: str, i18n: dict) -> str:
-    out = src.replace("{{LANG}}", lang).replace("{{HEAD}}", head(lang))
+    out = src.replace("{{LANG}}", lang).replace("{{HEAD}}", head(lang, i18n[lang]))
     return fill(out, i18n[lang])
 
 
